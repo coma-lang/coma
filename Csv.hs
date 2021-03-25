@@ -1,9 +1,5 @@
 module Csv where
 
-import Debug.Trace
-import Data.Maybe
-import System.Environment
-
 
 
 -- TYPES
