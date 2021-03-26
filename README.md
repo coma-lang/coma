@@ -25,6 +25,14 @@ All 2 tests passed (0.00s)
 coma> Test suite coma-test passed
 ```
 
+### Execute
+
+You can execute the program without building it first as follows:
+
+```bash
+stack exec coma-exe [ARGUMENTS]
+```
+
 ### Build
 
 ```bash
