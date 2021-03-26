@@ -1,32 +1,22 @@
 module CsvTest where
 
-import qualified Testify
 import qualified Csv
 
-
-
--- MAIN
-
-
-main :: IO ()
-main = Testify.test "parse" $ Testify.eq expect $ Csv.parse given
+import Test.Tasty.Hspec
 
 
 
--- GIVEN
+-- PARSE
 
 
-given :: String
-given =
-  " 1,2,3 \
-  \ 4,5,6 \
-  \ 7,8,9 "
+spec_csv_parse :: Spec
+spec_csv_parse = do
 
+  it "normal CSV" $
+    Csv.parse "1,2,3\n4,5,6\n7,8,9" 
+        `shouldBe` [["1","2","3"],["4","5","6"],["7","8","9"]]
 
-
--- EXPECT
-
-
-expect :: Csv.Table
-expect = [["1","2","3"],["4","5","6"],["7","8","9"]]
+  it "CSV with missing items" $
+    Csv.parse ",2,3\n,,6\n7,8," 
+        `shouldBe` [["","2","3"],["","","6"],["7","8",""]]
 
