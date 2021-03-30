@@ -1,6 +1,13 @@
-module Csv where
+module Csv
+  ( Row
+  , Table
+  , parse
+  , serialize
+  ) where
 
+import Data.List (intercalate)
 import Data.List.Split (splitOn)
+import Data.List.Extra (trim)
 
 
 
@@ -12,9 +19,28 @@ type Table = [Row]
 
 
 
+-- CONST
+
+
+coma :: String
+coma = ","
+
+
+
 -- PARSE
 
 
 parse :: String -> Table
-parse = map (splitOn ",") . words
+parse = map (map trim . splitOn coma) . lines
 
+
+
+-- SERIALIZE
+
+
+showRow :: Csv.Row -> String
+showRow = intercalate coma
+
+
+serialize :: Csv.Table -> String
+serialize = unlines . map showRow
