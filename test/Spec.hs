@@ -14,7 +14,7 @@ main = do
 
   csvParse <- testSpec "Parse" CsvTest.specCsvParse
   problem2 <- testSpec "#2" WasifTest.problem2
-  problem3 <- testSpec "#3" WasifTest.problem
+  problem3 <- testSpec "#3" WasifTest.problem3
 
   defaultMain $
     testGroup "All Tests"
