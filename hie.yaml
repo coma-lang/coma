@@ -1,0 +1,13 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "coma:lib"
+
+    - path: "./app/Main.hs"
+      component: "coma:exe:coma-exe"
+
+    - path: "./app/Paths_coma.hs"
+      component: "coma:exe:coma-exe"
+
+    - path: "./test"
+      component: "coma:test:coma-test"

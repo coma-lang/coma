@@ -2,6 +2,7 @@ import Test.Tasty
 import Test.Tasty.Hspec
 
 import qualified CsvTest
+import qualified WasifTest
 
 
 
@@ -10,9 +11,17 @@ import qualified CsvTest
 
 main :: IO ()
 main = do
-  csv_parse <- testSpec "Parse" CsvTest.spec_csv_parse
-  defaultMain
-    (testGroup "CSV"
-      [ csv_parse ]
-    )
-  
+
+  csvParse <- testSpec "Parse" CsvTest.specCsvParse
+  problem2 <- testSpec "#2" WasifTest.problem2
+  problem3 <- testSpec "#3" WasifTest.problem
+
+  defaultMain $
+    testGroup "All Tests"
+      [ testGroup "CSV"
+        [ csvParse ]
+      , testGroup "Problems"
+        [ problem2
+        , problem3
+        ]
+      ]

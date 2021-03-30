@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Csv
+      Wasif
   other-modules:
       Paths_coma
   hs-source-dirs:
@@ -53,6 +54,7 @@ test-suite coma-test
   main-is: Spec.hs
   other-modules:
       CsvTest
+      WasifTest
       Paths_coma
   hs-source-dirs:
       test

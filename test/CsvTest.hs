@@ -9,8 +9,8 @@ import Test.Tasty.Hspec
 -- PARSE
 
 
-spec_csv_parse :: Spec
-spec_csv_parse = do
+specCsvParse :: Spec
+specCsvParse = do
 
   it "normal CSV" $
     Csv.parse "1,2,3\n4,5,6\n7,8,9" 
