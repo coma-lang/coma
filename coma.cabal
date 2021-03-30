@@ -29,6 +29,7 @@ library
       Csv
       Viktor
       Wasif
+	  Tim
   other-modules:
       Paths_coma
   hs-source-dirs:
@@ -60,6 +61,7 @@ test-suite coma-test
       CsvTest
       ViktorTest
       WasifTest
+	  TimTest
       Paths_coma
   hs-source-dirs:
       test
