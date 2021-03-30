@@ -13,7 +13,8 @@ import qualified WasifTest
 main :: IO ()
 main = do
 
-  csvParse <- testSpec "Parse" CsvTest.specCsvParse
+  csvParse <- testSpec "Parse" CsvTest.csvParse
+  csvSerialize <- testSpec "Parse" CsvTest.csvSerialize
   problem1 <- testSpec "#1" ViktorTest.problem1
   problem2 <- testSpec "#2" WasifTest.problem2
   problem3 <- testSpec "#3" WasifTest.problem3
