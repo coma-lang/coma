@@ -4,6 +4,7 @@ import Data.List
 import Data.Maybe
 
 import qualified Csv
+import qualified Core
  
 
 
@@ -23,7 +24,7 @@ p2forEach [a1,a2,a3] = if a1 == a2 then Just [a3,a1] else Nothing
 
 
 p3 :: Csv.Table -> Csv.Table -> Csv.Table
-p3 p q = sort $ mapMaybe (uncurry p3forEach) (cartesianProduct p q)
+p3 p q = sort $ mapMaybe (uncurry p3forEach) (Core.cartesianProduct p q)
 
 
 p3forEach :: Csv.Row -> Csv.Row -> Maybe Csv.Row
@@ -33,7 +34,3 @@ p3forEach (p1:pr) (q1:qr) =
 
 p3r :: String -> String -> String
 p3r p q = if null p then q else p
-
-
-cartesianProduct :: [a] -> [b] -> [(a,b)]
-cartesianProduct xs ys = [(x,y) | x <- xs, y <- ys]
