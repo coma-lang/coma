@@ -4,6 +4,7 @@ import Test.Tasty.Hspec
 import qualified CsvTest
 import qualified ViktorTest
 import qualified WasifTest
+import qualified TimTest
 
 
 
@@ -18,6 +19,8 @@ main = do
   problem1 <- testSpec "#1" ViktorTest.problem1
   problem2 <- testSpec "#2" WasifTest.problem2
   problem3 <- testSpec "#3" WasifTest.problem3
+  problem4 <- testSpec "#4" TimTest.problem4
+  problem5 <- testSpec "#5" TimTest.problem5
 
   defaultMain $
     testGroup "All Tests"
@@ -27,5 +30,7 @@ main = do
         [ problem1
         , problem2
         , problem3
+        , problem4
+        , problem5
         ]
       ]
