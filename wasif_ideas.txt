@@ -19,9 +19,9 @@ let P := read "P.csv" in
 //P4
 let A := read "A.csv" in
     forEach row : A
-        if (get row r2 == "") then Nothing else Just (r1,r2)
+        if (get row r2 == "") then Nothing else Just (get row 1, get row 2)
 
 //P5
 let A := read "A.csv" in
     forEach row : A
-        Just (r1, "0", r2)
+        Just (get row 1, "0", get row 2)
