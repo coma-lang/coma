@@ -24,7 +24,7 @@ p2forEach [a1,a2,a3] = if a1 == a2 then Just [a3,a1] else Nothing
 
 
 p3 :: Csv.Table -> Csv.Table -> Csv.Table
-p3 p q = sort $ mapMaybe (uncurry p3forEach) (Core.cartesianProduct p q)
+p3 p q = sort $ mapMaybe (uncurry p3forEach) (Core.join p q)
 
 
 p3forEach :: Csv.Row -> Csv.Row -> Maybe Csv.Row

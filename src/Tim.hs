@@ -22,7 +22,6 @@ p4 _ = error "incorrect input"
 -- PROBLEM 5
 
 
-
 p5 :: Csv.Table -> Csv.Table
 p5 [] = []
 p5 ((a1:[]):rs) = sort((a1:"0":a1:[]):(p5 rs))

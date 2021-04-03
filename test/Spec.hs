@@ -5,6 +5,7 @@ import qualified CsvTest
 import qualified ViktorTest
 import qualified WasifTest
 import qualified TimTest
+import qualified CoreTest
 
 
 
@@ -21,6 +22,9 @@ main = do
   problem3 <- testSpec "#3" WasifTest.problem3
   problem4 <- testSpec "#4" TimTest.problem4
   problem5 <- testSpec "#5" TimTest.problem5
+  coreGet <- testSpec "get" CoreTest.coreGet
+  coreSelect <- testSpec "select" CoreTest.coreSelect
+  coreZip <- testSpec "zip" CoreTest.coreZip
 
   defaultMain $
     testGroup "All Tests"
@@ -32,5 +36,10 @@ main = do
         , problem3
         , problem4
         , problem5
+        ]
+      , testGroup "Core"
+        [ coreGet
+        , coreSelect
+        , coreZip
         ]
       ]

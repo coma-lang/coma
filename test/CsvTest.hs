@@ -1,8 +1,8 @@
 module CsvTest where
 
-import qualified Csv
-
 import Test.Tasty.Hspec
+
+import qualified Csv
 
 
 
