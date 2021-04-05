@@ -50,6 +50,7 @@ select indices = map (get indices)
 
 
 -- VALUE
+-- Look at the value at given index in row.
 
 
 value :: Int -> Csv.Row -> String
@@ -58,11 +59,11 @@ value index row = row !! index
 
 
 -- SAFE GET
--- Returns the value from p if the value from q is empty.
+-- Return the value from p if the value from q is empty.
 
 
 safeGet :: Csv.Row -> Csv.Row -> Int -> String
-safeGet q p col | qval == "" = pval
-                | otherwise = pval
-          where qval = q !! col
-                pval = p !! col
+safeGet q p col = if null qval then pval else qval
+  where 
+    qval = value col q
+    pval = value col p
