@@ -62,10 +62,13 @@ value row index = row !! index
 
 
 safeGet :: Csv.Row -> Csv.Row -> Int -> String
-safeGet q p col = if null qval then pval else qval
+safeGet p q col = if null qval then pval else qval
   where 
-    qval = value col q
-    pval = value col p
+    qval = value q col
+    pval = value p col
+
+
+
 
 
 {--

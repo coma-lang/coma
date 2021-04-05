@@ -27,13 +27,19 @@ p2forEach row =
 
 
 p3 :: Csv.Table -> Csv.Table -> Csv.Table
-p3 p q = sort $ mapMaybe (uncurry p3forEach) (Core.join p q)
+p3 p q = sort $ mapMaybe (uncurry p3forEach) (join p q)
 
+p3forEach :: Csv.Row -> Csv.Row -> Maybe Csv.Row
+p3forEach pr qr = if p1 == value qr 0
+                    then Just (p1 : safeGet pr qr 1 : safeGet pr qr 2 : safeGet pr qr 3)
+                    else Nothing
+          where p1 = value pr 0
 
+{--
 p3forEach :: Csv.Row -> Csv.Row -> Maybe Csv.Row
 p3forEach (p1:pr) (q1:qr) =
   if p1 == q1 then Just $ p1 : map (uncurry p3r) (zip pr qr) else Nothing
-
+--}
 
 p3r :: String -> String -> String
 p3r p q = if null p then q else p
