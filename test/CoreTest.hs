@@ -36,6 +36,28 @@ coreSelect = do
 
 
 
+-- JOIN
+
+
+coreJoin :: Spec
+coreJoin = do
+
+  it "join" $
+    Core.join
+      [ ["one","two"]
+      , ["five","six"]
+      ]
+      [ ["three","four"]
+      , ["seven","eight"]
+      ] `shouldBe`
+      [ (["one","two"],["three","four"])
+      , (["one","two"],["seven","eight"])
+      , (["five","six"],["three","four"])
+      , (["five","six"],["seven","eight"])
+      ]
+
+
+
 -- ZIP
 
 
@@ -51,6 +73,6 @@ coreZip = do
       , ["seven","eight"]
       , ["eleven","twelve"]
       ] `shouldBe`
-      [ (["one","two"],["three","four"])
-      , (["five","six"],["seven","eight"])
+      [ (["one","two","three","four"])
+      , (["five","six","seven","eight"])
       ]

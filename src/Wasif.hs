@@ -16,7 +16,10 @@ p2 = sort . mapMaybe p2forEach
 
 
 p2forEach :: Csv.Row -> Maybe Csv.Row
-p2forEach [a1,a2,a3] = if a1 == a2 then Just [a3,a1] else Nothing
+p2forEach row = 
+  if Core.get [0] row == Core.get [1] row
+    then Just $ Core.get [2,0] row
+    else Nothing
 
 
 

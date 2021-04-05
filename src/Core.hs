@@ -3,6 +3,7 @@ module Core
   , get
   , select
   , Core.zip
+  , value
   ) where
 
 import qualified Csv
@@ -14,7 +15,7 @@ import qualified Csv
 -- output list is X * Y where X and Y are respective length of the input tables.
 
 
-join :: Csv.Table -> Csv.Table -> [(Csv.Row, Csv.Row)]
+join :: Csv.Table -> Csv.Table -> [(Csv.Row,Csv.Row)]
 join xs ys = [(x,y) | x <- xs, y <- ys]
 
 
@@ -25,8 +26,8 @@ join xs ys = [(x,y) | x <- xs, y <- ys]
 -- of the Prelude.zip function.
 
 
-zip :: Csv.Table -> Csv.Table -> [(Csv.Row, Csv.Row)]
-zip = Prelude.zip
+zip :: Csv.Table -> Csv.Table -> [Csv.Row]
+zip a b = map (uncurry (++)) $ Prelude.zip a b
 
 
 
@@ -45,3 +46,23 @@ get indices row = map (row !!) indices
 
 select :: [Int] -> Csv.Table -> Csv.Table
 select indices = map (get indices)
+
+
+
+-- VALUE
+
+
+value :: Int -> Csv.Row -> String
+value index row = row !! index
+
+
+
+-- SAFE GET
+-- Returns the value from p if the value from q is empty.
+
+
+safeGet :: Csv.Row -> Csv.Row -> Int -> String
+safeGet q p col | qval == "" = pval
+                | otherwise = pval
+          where qval = q !! col
+                pval = p !! col
