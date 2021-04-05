@@ -45,3 +45,21 @@ get indices row = map (row !!) indices
 
 select :: [Int] -> Csv.Table -> Csv.Table
 select indices = map (get indices)
+
+
+-- SAFEGET
+-- Specific to problem 3
+-- Returns the value from p if the value from q is empty
+
+
+safeGet :: Csv.Row -> Csv.Row -> Int -> String
+safeGet q p col | qval == "" = pval
+                | otherwise = pval
+          where qval = q !! col
+                pval = p !! col
+
+
+-- Different version of GET
+-- Should just get row's value at col
+--get :: Int -> Csv.Row -> Csv.Row
+--get col row = row !! col
