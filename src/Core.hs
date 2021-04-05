@@ -3,6 +3,7 @@ module Core
   , get
   , select
   , Core.zip
+  , value
   ) where
 
 import qualified Csv
@@ -14,7 +15,7 @@ import qualified Csv
 -- output list is X * Y where X and Y are respective length of the input tables.
 
 
-join :: Csv.Table -> Csv.Table -> [(Csv.Row, Csv.Row)]
+join :: Csv.Table -> Csv.Table -> [(Csv.Row,Csv.Row)]
 join xs ys = [(x,y) | x <- xs, y <- ys]
 
 
@@ -25,8 +26,8 @@ join xs ys = [(x,y) | x <- xs, y <- ys]
 -- of the Prelude.zip function.
 
 
-zip :: Csv.Table -> Csv.Table -> [(Csv.Row, Csv.Row)]
-zip = Prelude.zip
+zip :: Csv.Table -> Csv.Table -> [Csv.Row]
+zip a b = map (uncurry (++)) $ Prelude.zip a b
 
 
 
@@ -47,6 +48,27 @@ select :: [Int] -> Csv.Table -> Csv.Table
 select indices = map (get indices)
 
 
+-- VALUE
+-- Look at the value at given index in row.
+
+
+value :: Csv.Row -> Int -> String
+value row index = row !! index
+
+
+
+-- SAFE GET
+-- Return the value from p if the value from q is empty.
+
+
+safeGet :: Csv.Row -> Csv.Row -> Int -> String
+safeGet q p col = if null qval then pval else qval
+  where 
+    qval = value col q
+    pval = value col p
+
+
+{--
 -- SAFEGET
 -- Specific to problem 3
 -- Returns the value from p if the value from q is empty
@@ -63,3 +85,4 @@ safeGet q p col | qval == "" = pval
 -- Should just get row's value at col
 --get :: Int -> Csv.Row -> Csv.Row
 --get col row = row !! col
+--}
