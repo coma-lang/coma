@@ -31,17 +31,17 @@ zip = Prelude.zip
 
 
 -- GET
--- Create a Csv.Row with just the elements under selected indeces.
+-- Create a Csv.Row with just the elements under selected indices.
 
 
 get :: [Int] -> Csv.Row -> Csv.Row
-get indeces row = map (row !!) indeces
+get indices row = map (row !!) indices
 
 
 
 -- SELECT
--- Create a Csv.Table with just the columns under selected indeces.
+-- Create a Csv.Table with just the columns under selected indices.
 
 
 select :: [Int] -> Csv.Table -> Csv.Table
-select indeces = map (get indeces)
+select indices = map (get indices)
