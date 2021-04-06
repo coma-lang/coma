@@ -31,7 +31,7 @@ p3 p q = sort $ mapMaybe (uncurry p3forEach) (Core.join p q)
 
 p3forEach :: Csv.Row -> Csv.Row -> Maybe Csv.Row
 p3forEach pr qr = if p1 == Core.value qr 0
-                    then Just [p1, Core.safeGet pr qr 1, Core.safeGet pr qr 2, Core.safeGet pr qr 3]
+                    then Just [p1, Core.safeGet qr pr 1, Core.safeGet qr pr 2, Core.safeGet qr pr 3]
                     else Nothing
           where p1 = Core.value pr 0
 

@@ -4,6 +4,7 @@ module Core
   , select
   , Core.zip
   , value
+  , safeGet
   ) where
 
 import qualified Csv
