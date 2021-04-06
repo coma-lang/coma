@@ -76,3 +76,18 @@ coreZip = do
       [ (["one","two","three","four"])
       , (["five","six","seven","eight"])
       ]
+
+
+
+-- MERGE
+
+
+coreMerge :: Spec
+coreMerge = do
+
+  it "merge" $
+    Core.merge
+      ["one","","","four"]
+      ["","six","","eight"] `shouldBe`
+      ["one","six","","four"]
+      
