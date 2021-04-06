@@ -1,0 +1,34 @@
+<expr> ::= <literal>
+         | <identifier>
+         | <let>
+         | <brack>
+         | <call>
+         | <lambda>
+
+<literal> ::= <string> | <integer> | <list>
+
+<identifier> ::= <char> | <char> <idtails>
+<idtails>    ::= <idtail> | <idtail> <idtails> 
+<idtail>     ::= <char> | <digit>
+
+<let> ::= let <identifier> := <expr> in <expr>
+
+<brack> ::= ( <expr> )
+
+<call>     ::= <expr> <operator> <expr> | <identifier> <args>
+<operator> ::= = != ++ > >= < <= + - * /
+
+<lambda> ::= <identifier> -> <expr>
+
+
+<string>  ::= " <chars> "
+<chars>   ::= <char> | <char> <chars>
+<char>    ::= <lower> | <upper>
+<lower>   ::= a-z
+<upper>   ::= A-Z
+
+<integer> ::= 0 | 1-9 <digit>*
+<digit>   ::= 0-9
+
+<list>    ::= [ <items> ]
+<items>   ::= <expr> | <expr> <items>
