@@ -2,47 +2,6 @@
 
 Coma is a language for manipulating data in the CSV files.
 
-## Usage
-
-### Test
-
-```bash
-stack test
-```
-
-Result should look something like this (taken from the latest test run):
-
-```
-coma> test (suite: coma-test)
-
-CSV
-  Parse
-    normal CSV:             OK
-    CSV with missing items: OK
-
-All 2 tests passed (0.00s)
-
-coma> Test suite coma-test passed
-```
-
-### Execute
-
-You can execute the program without building it first as follows:
-
-```bash
-stack exec coma-exe [ARGUMENTS]
-```
-
-### Build
-
-```bash
-stack build
-```
-
-**Note:** After building, path to the executable will be printed out in the
-terminal. It is quite long, so just copy-paste it or run a `cp` command to copy
-the file out of there.
-
 ## Code Structure
 
 ```
@@ -66,3 +25,67 @@ These are the most important locations you must know.
   as the main registry of all functions we will be testing.
 - [`package.yaml`](package.yaml) is the Stack manifest file where we specify all
   the dependencies we need (instead of a Cabal file -- do not edit it!).
+
+## Usage
+
+### Test
+
+```bash
+stack test
+```
+
+Result should look something like this (taken from one of the first test runs):
+
+```
+coma> test (suite: coma-test)
+
+CSV
+  Parse
+    normal CSV:             OK
+    CSV with missing items: OK
+
+All 2 tests passed (0.00s)
+
+coma> Test suite coma-test passed
+```
+
+### Execute
+
+You can execute the program, without building it first, as follows:
+
+```bash
+stack exec csvql [ARGUMENTS]
+```
+
+For example, you can try this:
+
+```bash
+stack exec csvql problems/p1.cql
+```
+
+### Build
+
+#### Windows
+
+```bash
+alex syntax/Lexer.x -o src/Lexer.hs
+stack build
+```
+
+#### Linux
+
+```bash
+bash setup.sh
+```
+
+#### MacOS
+
+```bash
+zsh setup.sh
+```
+
+### Install
+
+```bash
+stack install
+```
