@@ -24,7 +24,9 @@ main = do
   problem5 <- testSpec "#5" TimTest.problem5
   coreGet <- testSpec "get" CoreTest.coreGet
   coreSelect <- testSpec "select" CoreTest.coreSelect
-  corePairUp <- testSpec "zip" CoreTest.corePairUp
+  coreJoin <- testSpec "join" CoreTest.coreJoin
+  corePairUp <- testSpec "pairUp" CoreTest.corePairUp
+  coreMerge <- testSpec "merge" CoreTest.coreMerge
 
   defaultMain $
     testGroup "All Tests"
@@ -40,6 +42,8 @@ main = do
       , testGroup "Core"
         [ coreGet
         , coreSelect
+        , coreJoin
         , corePairUp
+        , coreMerge
         ]
       ]

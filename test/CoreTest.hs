@@ -64,7 +64,7 @@ coreJoin = do
 corePairUp :: Spec
 corePairUp = do
 
-  it "zip" $
+  it "pairUp" $
     Core.pairUp
       [ ["one","two"]
       , ["five","six"]
