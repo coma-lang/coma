@@ -2,7 +2,7 @@ module Main where
 
 import qualified System.Environment as Env
 
-import qualified Csv
+import qualified Coma
 
 
 
@@ -18,7 +18,7 @@ main = Env.getArgs >>= mode
 
 
 mode :: [String] -> IO ()
-mode [file] = readFile file >>= (print . Csv.parse)
+mode [file] = readFile file >>= Coma.exec >>= putStrLn
 mode _      = usage
 
 
@@ -28,4 +28,3 @@ mode _      = usage
 
 usage :: IO ()
 usage = putStrLn "Usage: coma [help | <file.cql>]"
-
