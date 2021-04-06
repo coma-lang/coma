@@ -24,7 +24,7 @@ main = do
   problem5 <- testSpec "#5" TimTest.problem5
   coreGet <- testSpec "get" CoreTest.coreGet
   coreSelect <- testSpec "select" CoreTest.coreSelect
-  coreZip <- testSpec "zip" CoreTest.coreZip
+  corePairUp <- testSpec "zip" CoreTest.corePairUp
 
   defaultMain $
     testGroup "All Tests"
@@ -40,6 +40,6 @@ main = do
       , testGroup "Core"
         [ coreGet
         , coreSelect
-        , coreZip
+        , corePairUp
         ]
       ]

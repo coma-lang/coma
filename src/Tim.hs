@@ -12,10 +12,7 @@ import qualified Core
 
 
 p4 :: Csv.Table -> Csv.Table
-p4 [] = []
-p4 (t@(a1:a2:[]):rs) | a2=="" = sort(p4 rs)
-                     | otherwise = sort(t:(p4 rs))
-p4 _ = error "incorrect input"
+p4 = sort . Core.given (not . Core.empty . Core.value 1)
 
 
 
@@ -23,6 +20,9 @@ p4 _ = error "incorrect input"
 
 
 p5 :: Csv.Table -> Csv.Table
-p5 [] = []
-p5 ((a1:[]):rs) = sort((a1:"0":a1:[]):(p5 rs))
-p5 _ = error "incorrect input"
+p5 = sort . map p5forEach
+
+
+p5forEach :: Csv.Row -> Csv.Row
+p5forEach row = first ++ ["0"] ++ first
+  where first = Core.get [ 0 ] row

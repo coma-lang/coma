@@ -9,4 +9,4 @@ import qualified Core
 
 
 p1 :: Csv.Table -> Csv.Table -> Csv.Table
-p1 a b = map (uncurry (++)) (Core.join a b)
+p1 a b = Core.join a b
