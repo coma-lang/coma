@@ -4,7 +4,8 @@ module Core
   , select
   , Core.zip
   , value
-  , safeGet
+  , firstOr
+  , merge
   ) where
 
 import qualified Csv
@@ -27,7 +28,7 @@ join xs ys = [(x,y) | x <- xs, y <- ys]
 -- of the Prelude.zip function.
 
 
-zip :: Csv.Table -> Csv.Table -> [Csv.Row]
+zip :: Csv.Table -> Csv.Table -> Csv.Table
 zip a b = map (uncurry (++)) $ Prelude.zip a b
 
 
@@ -49,44 +50,29 @@ select :: [Int] -> Csv.Table -> Csv.Table
 select indices = map (get indices)
 
 
+
 -- VALUE
 -- Look at the value at given index in row.
 
 
-value :: Csv.Row -> Int -> String
-value row index = row !! index
+value :: Int -> Csv.Row -> String
+value index row = row !! index
 
 
 
--- SAFE GET
+-- FIRST OR
 -- Return the value from p if the value from q is empty.
 
 
-safeGet :: Csv.Row -> Csv.Row -> Int -> String
-safeGet p q col = if null qval then pval else qval
-  where 
-    qval = value q col
-    pval = value p col
+firstOr :: String -> String -> String
+firstOr x y = if null x then y else x
 
 
 
+-- MERGE
+-- Merge two rows, giving priority to the first one. Use values from the second
+-- row if the value in the first row is an empty string.
 
 
-{--
--- SAFEGET
--- Specific to problem 3
--- Returns the value from p if the value from q is empty
-
-
-safeGet :: Csv.Row -> Csv.Row -> Int -> String
-safeGet q p col | qval == "" = pval
-                | otherwise = pval
-          where qval = q !! col
-                pval = p !! col
-
-
--- Different version of GET
--- Should just get row's value at col
---get :: Int -> Csv.Row -> Csv.Row
---get col row = row !! col
---}
+merge :: Csv.Row -> Csv.Row -> Csv.Row
+merge p q = map (uncurry firstOr) $ Prelude.zip p q

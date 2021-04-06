@@ -16,6 +16,8 @@ let A := read "A.csv" in
             then Just (get row 3, get row 1) 
             else Nothing
 
+
+
 -- Problem 3
 
 
@@ -27,12 +29,16 @@ let Q := read "Q.csv" in
                 then Just (get rp 1, safeGet rq rp 2, safeGet rq rp 3, safeGet rq rp 4)
 -- safeGet returns the value from p if the q value is empty
 
+
+
 -- Problem 4
 
 
 let A := read "A.csv" in
     forEach row : A
         if (get row r2 == "") then Nothing else Just (get row 1, get row 2)
+
+
 
 -- Problem 5
 
