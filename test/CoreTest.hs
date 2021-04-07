@@ -50,10 +50,10 @@ coreJoin = do
       [ ["three","four"]
       , ["seven","eight"]
       ] `shouldBe`
-      [ (["one","two"],["three","four"])
-      , (["one","two"],["seven","eight"])
-      , (["five","six"],["three","four"])
-      , (["five","six"],["seven","eight"])
+      [ ["one","two","three","four"]
+      , ["one","two","seven","eight"]
+      , ["five","six","three","four"]
+      , ["five","six","seven","eight"]
       ]
 
 
@@ -61,11 +61,11 @@ coreJoin = do
 -- ZIP
 
 
-coreZip :: Spec
-coreZip = do
+corePairUp :: Spec
+corePairUp = do
 
-  it "zip" $
-    Core.zip 
+  it "pairUp" $
+    Core.pairUp
       [ ["one","two"]
       , ["five","six"]
       ]
