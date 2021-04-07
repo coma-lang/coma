@@ -10,6 +10,8 @@ coma/
 --> src/
 --> test/
 --> package.yaml
+--> problems/
+--> syntax/
 ```
 
 These are the most important locations you must know.
@@ -25,6 +27,9 @@ These are the most important locations you must know.
   as the main registry of all functions we will be testing.
 - [`package.yaml`](package.yaml) is the Stack manifest file where we specify all
   the dependencies we need (instead of a Cabal file -- do not edit it!).
+- [`problems/`](problems/) contains solutions to problems with the Coma
+  programming language.
+- [`syntax/`](syntax/) contains BNF syntax declaration, Alex and Happy files.
 
 ## Usage
 
