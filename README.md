@@ -68,6 +68,15 @@ For example, you can try this:
 stack exec csvql problems/p1.cql
 ```
 
+Now, you can also start a REPL with
+
+```bash
+stack exec csvql repl
+```
+
+Exit the REPL session with either `CTRL+C` or `CTRL+D` (although the second
+might not work on Windows).
+
 ### Build
 
 #### Windows

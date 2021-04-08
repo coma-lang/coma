@@ -2,21 +2,22 @@ module Repl (loop) where
 
 import Control.Monad (forever)
 import qualified System.IO as Buf
-import Data.Foldable
 
 import qualified Coma
 
 
 
 -- READ
--- Print out some helpful prefix to express that we're expecting some input.
--- Then read one line from stdin and return it.
 
 
 read :: IO String
-read = do
-    Repl.printFlush "λ <- "
-    Buf.getLine
+read = aux "" 0
+  where
+    aux string 1 = return string
+    aux string i = do
+      printFlush "❮❮❮ "
+      line <- Buf.getLine
+      aux (string ++ line) (fromEnum (null line) + i)
 
 
 
@@ -24,15 +25,17 @@ read = do
 
 
 print :: String -> IO ()
-print string = putStrLn $ "λ -> " ++ string ++ "\n"
+print string = putStrLn $ "❯❯❯ " ++ string ++ "\n"
 
 
 
--- EVAL
+-- PRINT AND FLUSH
 
 
-eval :: IO ()
-eval = Repl.read >>= Coma.exec >>= Repl.print
+printFlush :: String -> IO ()
+printFlush string = do
+  putStr string
+  Buf.hFlush Buf.stdout
 
 
 
@@ -42,14 +45,4 @@ eval = Repl.read >>= Coma.exec >>= Repl.print
 
 
 loop :: IO ()
-loop = forever $ Repl.eval
-
-
-
--- UTILITY FUNCTIONS
-
-
-printFlush :: String -> IO ()
-printFlush string = do
-    Prelude.putStr string
-    Buf.hFlush Buf.stdout
+loop = forever $ Repl.read >>= Coma.eval >>= Repl.print
