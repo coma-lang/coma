@@ -2,6 +2,7 @@ module Main where
 
 import qualified System.Environment as Env
 
+import qualified Repl
 import qualified Coma
 
 
@@ -18,8 +19,9 @@ main = Env.getArgs >>= mode
 
 
 mode :: [String] -> IO ()
-mode [file] = readFile file >>= Coma.exec >>= putStrLn
-mode _      = usage
+mode ["repl"] = Repl.loop
+mode [file]   = readFile file >>= Coma.exec >>= putStrLn
+mode _        = usage
 
 
 
@@ -27,4 +29,4 @@ mode _      = usage
 
 
 usage :: IO ()
-usage = putStrLn "Usage: coma [help | <file.cql>]"
+usage = putStrLn "Usage: coma [<file.cql> | repl | help]"

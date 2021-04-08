@@ -29,7 +29,6 @@ tokens :-
   ")"               { \pos _ -> TokenRightParen         pos          }
   "["               { \pos _ -> TokenLeftBrace          pos          }
   "]"               { \pos _ -> TokenRightBrace         pos          }
-  "\""              { \pos _ -> TokenDoubleTick         pos          }
   ":="              { \pos _ -> TokenAssign             pos          }
   let               { \pos _ -> TokenLet                pos          }
   in                { \pos _ -> TokenIn                 pos          }
@@ -55,7 +54,6 @@ data Token
   | TokenRightParen         AlexPosn
   | TokenLeftBrace          AlexPosn
   | TokenRightBrace         AlexPosn
-  | TokenDoubleTick         AlexPosn
   | TokenAssign             AlexPosn
   | TokenLet                AlexPosn
   | TokenIn                 AlexPosn
@@ -83,7 +81,6 @@ tokenPosn (TokenLeftParen          pos  ) = showPosn pos
 tokenPosn (TokenRightParen         pos  ) = showPosn pos     
 tokenPosn (TokenLeftBrace          pos  ) = showPosn pos
 tokenPosn (TokenRightBrace         pos  ) = showPosn pos
-tokenPosn (TokenDoubleTick         pos  ) = showPosn pos
 tokenPosn (TokenAssign             pos  ) = showPosn pos
 tokenPosn (TokenLet                pos  ) = showPosn pos
 tokenPosn (TokenIn                 pos  ) = showPosn pos

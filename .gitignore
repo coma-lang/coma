@@ -2,4 +2,3 @@
 *~
 dist-*
 src/Lexer.hs
-src/Parser.hs
