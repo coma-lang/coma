@@ -29,6 +29,7 @@ library
       Core
       Csv
       Lexer
+      Parser
       Repl
       Tim
       Viktor

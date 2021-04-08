@@ -20,7 +20,7 @@ main = Env.getArgs >>= mode
 
 mode :: [String] -> IO ()
 mode ["repl"] = Repl.loop
-mode [file]   = readFile file >>= Coma.exec >>= putStrLn
+mode [file]   = readFile file >>= Coma.eval >>= putStrLn
 mode _        = usage
 
 

@@ -62,7 +62,7 @@ data Token
   | TokenInteger            AlexPosn Int
   deriving (Eq,Show) 
 
-tokenize = alexScanTokens
+lex = alexScanTokens
 
 tokenPosn :: Token -> String
 tokenPosn (TokenArrow              pos  ) = showPosn pos     
