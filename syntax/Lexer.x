@@ -14,6 +14,7 @@ tokens :-
   $white+           ; 
   "--".*            ; 
   "->"              { \pos _ -> TokenArrow              pos          }
+  "<|"              { \pos _ -> TokenApply              pos          }
   "!="              { \pos _ -> TokenNotEqual           pos          }
   "="               { \pos _ -> TokenEqual              pos          }
   "<"               { \pos _ -> TokenLessThan           pos          }
@@ -39,6 +40,7 @@ tokens :-
 { 
 data Token
   = TokenArrow              AlexPosn
+  | TokenApply              AlexPosn
   | TokenNotEqual           AlexPosn
   | TokenEqual              AlexPosn
   | TokenLessThan           AlexPosn
@@ -66,6 +68,7 @@ lex = alexScanTokens
 
 tokenPosn :: Token -> String
 tokenPosn (TokenArrow              pos  ) = showPosn pos     
+tokenPosn (TokenApply              pos  ) = showPosn pos     
 tokenPosn (TokenNotEqual           pos  ) = showPosn pos     
 tokenPosn (TokenEqual              pos  ) = showPosn pos     
 tokenPosn (TokenLessThan           pos  ) = showPosn pos     
