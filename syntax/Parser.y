@@ -45,22 +45,26 @@ import Lexer
 
 %% 
 
-Expr        :: { Coma }
-Expr        : Expr '='  Expr1          { Equal $1 $3 }
-            | Expr '!=' Expr1          { NotEqual $1 $3 }
-            | Expr '<'  Expr1          { Less $1 $3 }
-            | Expr '<=' Expr1          { LessEqual $1 $3 }
-            | Expr '>'  Expr1          { Greater $1 $3 }
-            | Expr '>=' Expr1          { GreaterEqual $1 $3 }
-            | Expr '++' Expr1          { Append $1 $3 }
-            | Expr '+'  Expr1          { Add $1 $3 }
-            | Expr '-'  Expr1          { Subtract $1 $3 }
-            | Expr '*'  Expr1          { Multiply $1 $3 }
-            | Expr '/'  Expr1          { Divide $1 $3 }
-            | Expr1                    { $1 }
+Let         :: { Coma }
+Let         : let ident ':=' Expr in Let { Let $2 $4 $6 }
+            | Expr                       { $1 }
 
-Expr1       :: { Coma }
-Expr1       : Expr1 Literal            { Call $1 $2 }
+Expr        :: { Coma }
+Expr        : Expr '='  Call           { Equal $1 $3 }
+            | Expr '!=' Call           { NotEqual $1 $3 }
+            | Expr '<'  Call           { Less $1 $3 }
+            | Expr '<=' Call           { LessEqual $1 $3 }
+            | Expr '>'  Call           { Greater $1 $3 }
+            | Expr '>=' Call           { GreaterEqual $1 $3 }
+            | Expr '++' Call           { Append $1 $3 }
+            | Expr '+'  Call           { Add $1 $3 }
+            | Expr '-'  Call           { Subtract $1 $3 }
+            | Expr '*'  Call           { Multiply $1 $3 }
+            | Expr '/'  Call           { Divide $1 $3 }
+            | Call                     { $1 }
+
+Call        :: { Coma }
+Call        : Call Literal             { Call $1 $2 }
             | Literal                  { $1 }
 
 Literal     :: { Coma }
@@ -69,7 +73,7 @@ Literal     : integer                  { IntAtom $1 }
             | ident                    { Ident $1 }
             | '(' Expr ')'             { $2 }
             | '[' List ']'             { List $2 }
-            | '(' Params '->' Expr ')' { Lambda (reverse $2) $4 }
+            | '(' Params '->' Let ')'  { Lambda (reverse $2) $4 }
 
 List        :: { [Coma] }
 List        : {- empty -}              { [] }
@@ -104,5 +108,6 @@ data Coma
   | Multiply Coma Coma
   | Divide Coma Coma
   | Call Coma Coma
+  | Let String Coma Coma
   deriving Show
 }
