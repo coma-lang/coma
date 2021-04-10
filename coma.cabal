@@ -25,15 +25,13 @@ source-repository head
 
 library
   exposed-modules:
+      Ast
       Coma
       Core
       Csv
       Lexer
       Parser
       Repl
-      Tim
-      Viktor
-      Wasif
   other-modules:
       Paths_coma
   hs-source-dirs:
@@ -66,11 +64,9 @@ test-suite coma-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      ComaTest
       CoreTest
       CsvTest
-      TimTest
-      ViktorTest
-      WasifTest
       Paths_coma
   hs-source-dirs:
       test

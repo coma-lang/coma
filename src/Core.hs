@@ -1,5 +1,6 @@
 module Core 
-  ( join
+  ( Core.read
+  , join
   , get
   , select
   , pairUp
@@ -13,6 +14,27 @@ module Core
 import Data.Maybe
 
 import qualified Csv
+import qualified Ast
+
+
+
+-- INVALID INPUT
+
+
+invalidInput fn expr = error $ "Invalid input to '" ++ fn ++ "': " ++ show expr
+
+
+
+-- READ
+
+
+read :: Ast.Coma -> IO Ast.Coma
+read (Ast.StrAtom filename) = 
+  readFile filename >>= (return . convert . Csv.parse)
+  where 
+    convert = Ast.List . map convertRow
+    convertRow = Ast.List . map Ast.StrAtom
+read err = invalidInput "read" err
 
 
 
@@ -21,8 +43,12 @@ import qualified Csv
 -- output list is X * Y where X and Y are respective length of the input tables.
 
 
-join :: Csv.Table -> Csv.Table -> Csv.Table
-join xs ys = map (uncurry (++)) $ [(x,y) | x <- xs, y <- ys]
+join :: Ast.Coma -> Ast.Coma -> Ast.Coma
+join (Ast.List xs) (Ast.List ys) 
+  = Ast.List 
+  $ map (Ast.List . uncurry (++)) 
+  $ [(x,y) | (Ast.List x) <- xs, (Ast.List y) <- ys]
+join e1 e2 = invalidInput "join" $ Ast.List [e1, e2]
 
 
 
