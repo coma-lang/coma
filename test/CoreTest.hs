@@ -3,6 +3,56 @@ module CoreTest where
 import Test.Tasty.Hspec
 
 import qualified Core
+import qualified Ast
+
+
+
+-- READ
+
+
+coreRead :: Spec
+coreRead = do
+
+  numbers <- runIO $ Core.read $ Ast.StrAtom "test/data/numbers.csv"
+
+  it "read" $
+    numbers `shouldBe` 
+    Ast.List 
+      [ Ast.List [Ast.StrAtom "1", Ast.StrAtom "2", Ast.StrAtom "3"]
+      , Ast.List [Ast.StrAtom "4", Ast.StrAtom "5", Ast.StrAtom "6"]
+      , Ast.List [Ast.StrAtom "7", Ast.StrAtom "8", Ast.StrAtom "9"]
+      ]
+
+
+
+-- JOIN
+
+
+coreJoin :: Spec
+coreJoin = do
+
+  it "join" $
+    Core.join
+      ( Ast.List 
+        [ Ast.List [Ast.StrAtom "1", Ast.StrAtom "2"]
+        , Ast.List [Ast.StrAtom "5", Ast.StrAtom "6"]
+        ]
+      )
+      ( Ast.List 
+        [ Ast.List [Ast.StrAtom "3", Ast.StrAtom "4"]
+        , Ast.List [Ast.StrAtom "7", Ast.StrAtom "8"]
+        ]
+      ) `shouldBe`
+      Ast.List 
+        [ Ast.List 
+          [Ast.StrAtom "1", Ast.StrAtom "2", Ast.StrAtom "3", Ast.StrAtom "4"]
+        , Ast.List 
+          [Ast.StrAtom "1", Ast.StrAtom "2", Ast.StrAtom "7", Ast.StrAtom "8"]
+        , Ast.List 
+          [Ast.StrAtom "5", Ast.StrAtom "6", Ast.StrAtom "3", Ast.StrAtom "4"]
+        , Ast.List 
+          [Ast.StrAtom "5", Ast.StrAtom "6", Ast.StrAtom "7", Ast.StrAtom "8"]
+        ]
 
 
 
@@ -32,28 +82,6 @@ coreSelect = do
       [ ["two","three"]
       , ["six","seven"]
       , ["ten","eleven"]
-      ]
-
-
-
--- JOIN
-
-
-coreJoin :: Spec
-coreJoin = do
-
-  it "join" $
-    Core.join
-      [ ["one","two"]
-      , ["five","six"]
-      ]
-      [ ["three","four"]
-      , ["seven","eight"]
-      ] `shouldBe`
-      [ ["one","two","three","four"]
-      , ["one","two","seven","eight"]
-      , ["five","six","three","four"]
-      , ["five","six","seven","eight"]
       ]
 
 
