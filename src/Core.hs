@@ -1,6 +1,7 @@
 module Core 
   ( Core.read
   , join
+  , doubleJoin
   , get
   , select
   , pairUp
@@ -12,6 +13,7 @@ module Core
   ) where
 
 import Data.Maybe
+import qualified Data.HashMap as HM
 
 import qualified Csv
 import qualified Ast
@@ -28,13 +30,13 @@ invalidInput fn expr = error $ "Invalid input to '" ++ fn ++ "': " ++ show expr
 -- READ
 
 
-read :: Ast.Coma -> IO Ast.Coma
-read (Ast.StrAtom filename) = 
+read :: Ast.Env -> Ast.Coma -> IO Ast.Coma
+read _ (Ast.StrAtom filename) = 
   readFile filename >>= (return . convert . Csv.parse)
   where 
     convert = Ast.List . map convertRow
     convertRow = Ast.List . map Ast.StrAtom
-read err = invalidInput "read" err
+read _ err = invalidInput "read" err
 
 
 
@@ -43,12 +45,21 @@ read err = invalidInput "read" err
 -- output list is X * Y where X and Y are respective length of the input tables.
 
 
-join :: Ast.Coma -> Ast.Coma -> Ast.Coma
-join (Ast.List xs) (Ast.List ys) 
-  = Ast.List 
-  $ map (Ast.List . uncurry (++)) 
-  $ [(x,y) | (Ast.List x) <- xs, (Ast.List y) <- ys]
-join e1 e2 = invalidInput "join" $ Ast.List [e1, e2]
+join :: Ast.Env -> Ast.Coma -> IO Ast.Coma
+join env list@(Ast.List ys) =
+  case xs' of
+    Nothing -> return $ Ast.Lambda (HM.insert "xs" list env) join
+    Just (Ast.List xs) -> return
+      $ Ast.List 
+      $ map (Ast.List . uncurry (++)) 
+      $ [(x,y) | (Ast.List x) <- xs, (Ast.List y) <- ys]
+  where xs' = HM.lookup "xs" env
+    
+
+doubleJoin :: Ast.Coma -> Ast.Coma -> IO Ast.Coma
+doubleJoin xs ys = do
+  Ast.Lambda lenv fn <- join HM.empty xs
+  fn lenv ys
 
 
 

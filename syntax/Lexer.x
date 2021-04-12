@@ -13,6 +13,7 @@ $graphic = $printable # $white
 tokens :-
   $white+           ; 
   "--".*            ; 
+  "\\"              { \pos _ -> TokenLambda             pos          }
   "->"              { \pos _ -> TokenArrow              pos          }
   "!="              { \pos _ -> TokenNotEqual           pos          }
   "="               { \pos _ -> TokenEqual              pos          }
@@ -39,6 +40,7 @@ tokens :-
 { 
 data Token
   = TokenArrow              AlexPosn
+  | TokenLambda             AlexPosn
   | TokenNotEqual           AlexPosn
   | TokenEqual              AlexPosn
   | TokenLessThan           AlexPosn
@@ -65,6 +67,7 @@ data Token
 lex = alexScanTokens
 
 tokenPosn :: Token -> String
+tokenPosn (TokenLambda             pos  ) = showPosn pos     
 tokenPosn (TokenArrow              pos  ) = showPosn pos     
 tokenPosn (TokenNotEqual           pos  ) = showPosn pos     
 tokenPosn (TokenEqual              pos  ) = showPosn pos     

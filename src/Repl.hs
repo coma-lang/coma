@@ -17,7 +17,7 @@ read = aux "" 0
     aux string i = do
       printFlush "❮❮❮ "
       line <- Buf.getLine
-      aux (string ++ line) (fromEnum (null line) + i)
+      aux (string ++ line ++ "\n") (fromEnum (null line) + i)
 
 
 

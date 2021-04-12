@@ -2,6 +2,10 @@ module CoreTest where
 
 import Test.Tasty.Hspec
 
+import qualified Data.HashMap as HM
+import System.IO.Unsafe (unsafePerformIO)
+import Debug.Trace (trace)
+
 import qualified Core
 import qualified Ast
 
@@ -13,7 +17,7 @@ import qualified Ast
 coreRead :: Spec
 coreRead = do
 
-  numbers <- runIO $ Core.read $ Ast.StrAtom "test/data/numbers.csv"
+  numbers <- runIO $ Core.read HM.empty $ Ast.StrAtom "test/data/numbers.csv"
 
   it "read" $
     numbers `shouldBe` 
@@ -22,37 +26,6 @@ coreRead = do
       , Ast.List [Ast.StrAtom "4", Ast.StrAtom "5", Ast.StrAtom "6"]
       , Ast.List [Ast.StrAtom "7", Ast.StrAtom "8", Ast.StrAtom "9"]
       ]
-
-
-
--- JOIN
-
-
-coreJoin :: Spec
-coreJoin = do
-
-  it "join" $
-    Core.join
-      ( Ast.List 
-        [ Ast.List [Ast.StrAtom "1", Ast.StrAtom "2"]
-        , Ast.List [Ast.StrAtom "5", Ast.StrAtom "6"]
-        ]
-      )
-      ( Ast.List 
-        [ Ast.List [Ast.StrAtom "3", Ast.StrAtom "4"]
-        , Ast.List [Ast.StrAtom "7", Ast.StrAtom "8"]
-        ]
-      ) `shouldBe`
-      Ast.List 
-        [ Ast.List 
-          [Ast.StrAtom "1", Ast.StrAtom "2", Ast.StrAtom "3", Ast.StrAtom "4"]
-        , Ast.List 
-          [Ast.StrAtom "1", Ast.StrAtom "2", Ast.StrAtom "7", Ast.StrAtom "8"]
-        , Ast.List 
-          [Ast.StrAtom "5", Ast.StrAtom "6", Ast.StrAtom "3", Ast.StrAtom "4"]
-        , Ast.List 
-          [Ast.StrAtom "5", Ast.StrAtom "6", Ast.StrAtom "7", Ast.StrAtom "8"]
-        ]
 
 
 

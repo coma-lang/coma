@@ -10,8 +10,8 @@ module Coma (eval, exec) where
 import qualified Data.HashMap as HM
 
 import qualified Lexer
-import qualified Parser
 import qualified Ast
+import qualified Core
 
 
 
@@ -22,7 +22,7 @@ import qualified Ast
 
 
 eval :: String -> IO String
-eval code = (exec $ Parser.parse $ Lexer.lex code) >>= (return . show)
+eval code = (exec $ Ast.parse $ Lexer.lex code) >>= (return . show)
 
 
 
@@ -32,32 +32,16 @@ eval code = (exec $ Parser.parse $ Lexer.lex code) >>= (return . show)
 
 
 exec :: Ast.Coma -> IO Ast.Coma
-exec = execWithEnv (HM.empty)
+exec = Ast.execWithEnv env
 
 
 
--- EXEC WITH ENV
+-- ENV
+-- Contains Coma's standard library of functions.
 
 
-execWithEnv :: Ast.Env -> Ast.Coma -> IO Ast.Coma
-
-execWithEnv env int@(Ast.IntAtom _) = return int
-execWithEnv env str@(Ast.StrAtom _) = return str
-
-execWithEnv env ident@(Ast.Ident name) = 
-  case HM.lookup name env of
-    Just coma -> return coma
-    Nothing   -> error $ "Unknown identifier: '" ++ name ++ "'"
-
-execWithEnv env lambda@(Ast.Lambda lenv [] expr) = 
-  execWithEnv (HM.union env lenv) expr
-execWithEnv env lambda@(Ast.Lambda _ _ _) = return lambda
-
-execWithEnv env (Ast.Call (Ast.Lambda lenv (p:params) expr) arg) = do
-  arg' <- execWithEnv env arg
-  execWithEnv env $ Ast.Lambda (HM.insert p arg' lenv) params expr
-execWithEnv env (Ast.Call fn arg) = do
-  fn' <- execWithEnv env fn
-  execWithEnv env (Ast.Call fn' arg)
-
-execWithEnv _ code = return code
+env :: HM.Map String Ast.Coma
+env = HM.fromList
+  [ ("read", Ast.Lambda HM.empty Core.read)
+  , ("join", Ast.Lambda HM.empty Core.join)
+  ]
