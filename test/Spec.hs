@@ -19,7 +19,6 @@ main = do
   coreRead <- testSpec "read" CoreTest.coreRead
   coreGet <- testSpec "get" CoreTest.coreGet
   coreSelect <- testSpec "select" CoreTest.coreSelect
-  coreJoin <- testSpec "join" CoreTest.coreJoin
   corePairUp <- testSpec "pairUp" CoreTest.corePairUp
   coreMerge <- testSpec "merge" CoreTest.coreMerge
 
@@ -31,7 +30,6 @@ main = do
         [ csvParse ]
       , testGroup "Core"
         [ coreRead
-        , coreJoin
         , coreGet
         , coreSelect
         , corePairUp

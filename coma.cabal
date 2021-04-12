@@ -30,7 +30,7 @@ library
       Core
       Csv
       Lexer
-      Parser
+      MainTest
       Repl
   other-modules:
       Paths_coma
