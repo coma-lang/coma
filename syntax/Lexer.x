@@ -13,7 +13,7 @@ $graphic = $printable # $white
 tokens :-
   $white+           ; 
   "--".*            ; 
-  "\\"              { \pos _ -> TokenLambda             pos          }
+  "\"               { \pos _ -> TokenLambda             pos          }
   "->"              { \pos _ -> TokenArrow              pos          }
   "!="              { \pos _ -> TokenNotEqual           pos          }
   "="               { \pos _ -> TokenEqual              pos          }
