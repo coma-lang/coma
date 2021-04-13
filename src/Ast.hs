@@ -829,13 +829,12 @@ instance Eq Coma where
 
 
 
-
 -- SHOW COMA
 
 
 instance Show Coma where
   show (IntAtom i) = show i
-  show (StrAtom s) = show s
+  show (StrAtom s) = s
   show (Ident idt) = idt
   show (List list) = "[ " ++ unwords (map show list) ++ " ]"
   show (Lambda _ _) = "<lambda>"
@@ -872,6 +871,10 @@ execWithEnv env (Call e1 e2) = do
   Lambda lenv fn <- execWithEnv env e1
   arg <- execWithEnv env e2
   fn lenv arg
+
+execWithEnv env (Let ident expr inexpr) = do
+  evaluated <- execWithEnv env expr
+  execWithEnv (HM.insert ident evaluated env) inexpr 
   
 execWithEnv _ code = return code
 

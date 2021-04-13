@@ -14,6 +14,6 @@
 -- PROBLEM 1
 
 
-let A := read "A.csv" in
-let B := read "B.csv" in
+let A := read "test/data/numbers.csv" in
+let B := read "test/data/numbers-with-empty.csv" in
 join A B
