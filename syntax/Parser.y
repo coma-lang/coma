@@ -23,11 +23,6 @@ import Lexer
 
   '++'    { TokenAppend             pos }
 
-  '+'     { TokenAdd                pos }
-  '-'     { TokenSubtract           pos }
-  '*'     { TokenMultiply           pos }
-  '/'     { TokenDivide             pos }
-
   '\\'    { TokenLambda             pos }
   '->'    { TokenArrow              pos }
 
@@ -59,10 +54,6 @@ Expr        : Expr '='  Call             { Equal $1 $3 }
             | Expr '>'  Call             { Greater $1 $3 }
             | Expr '>=' Call             { GreaterEqual $1 $3 }
             | Expr '++' Call             { Append $1 $3 }
-            | Expr '+'  Call             { Add $1 $3 }
-            | Expr '-'  Call             { Subtract $1 $3 }
-            | Expr '*'  Call             { Multiply $1 $3 }
-            | Expr '/'  Call             { Divide $1 $3 }
             | Call                       { $1 }
 
 Call        :: { Coma }
@@ -111,10 +102,6 @@ data Coma
   | Greater Coma Coma
   | GreaterEqual Coma Coma
   | Append Coma Coma
-  | Add Coma Coma
-  | Subtract Coma Coma
-  | Multiply Coma Coma
-  | Divide Coma Coma
   | Call Coma Coma
   | Let String Coma Coma
   
@@ -148,10 +135,6 @@ instance Show Coma where
   show (Greater e1 e2) = show e1 ++ " > " ++ show e2
   show (GreaterEqual e1 e2) = show e1 ++ " >= " ++ show e2
   show (Append e1 e2) = show e1 ++ " ++ " ++ show e2
-  show (Add e1 e2) = show e1 ++ " + " ++ show e2
-  show (Subtract e1 e2) = show e1 ++ " - " ++ show e2
-  show (Multiply e1 e2) = show e1 ++ " * " ++ show e2
-  show (Divide e1 e2) = show e1 ++ " / " ++ show e2
   show (Call e1 e2) = "(" ++ show e1 ++ " " ++ show e2 ++ ")"
   show (Let idt e1 e2) = "let " ++ idt ++ " := " ++ show e1 ++ " in " ++ show e2
 
