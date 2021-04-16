@@ -25,12 +25,10 @@ source-repository head
 
 library
   exposed-modules:
-      Ast
       Coma
       Core
       Csv
       Lexer
-      MainTest
       Repl
   other-modules:
       Paths_coma
@@ -64,7 +62,6 @@ test-suite coma-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      ComaTest
       CoreTest
       CsvTest
       Paths_coma

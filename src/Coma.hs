@@ -42,6 +42,8 @@ exec = Ast.execWithEnv env
 
 env :: HM.Map String Ast.Coma
 env = HM.fromList
-  [ ("read", Ast.Lambda 0 HM.empty Core.read)
-  , ("join", Ast.Lambda 0 HM.empty Core.join)
+  [ ("read",   Ast.Lambda 0 HM.empty Core.read)
+  , ("join",   Ast.Lambda 0 HM.empty Core.join)
+  , ("get",    Ast.Lambda 0 HM.empty Core.get)
+  , ("select", Ast.Lambda 0 HM.empty Core.select)
   ]

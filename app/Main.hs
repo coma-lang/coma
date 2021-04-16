@@ -4,7 +4,6 @@ import qualified System.Environment as Env
 
 import qualified Repl
 import qualified Coma
-import qualified MainTest
 
 
 
@@ -21,7 +20,6 @@ main = Env.getArgs >>= mode
 
 mode :: [String] -> IO ()
 mode ["repl"] = Repl.loop
-mode ["test"] = MainTest.test
 mode [file]   = readFile file >>= Coma.eval >>= putStrLn
 mode _        = usage
 
