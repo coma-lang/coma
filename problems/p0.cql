@@ -2,4 +2,4 @@
 -- currently working.
 
 
-join (read "test/data/numbers.csv") (read "test/data/numbers-with-empty.csv")
+select [0 2] (read "test/data/numbers.csv")

@@ -14,13 +14,12 @@ import Lexer
   '['     { TokenLeftBrace          pos }
   ']'     { TokenRightBrace         pos }
 
-  '!='    { TokenNotEqual           pos }
   '='     { TokenEqual              pos }
+  '!='    { TokenNotEqual           pos }
   '<'     { TokenLessThan           pos }
   '<='    { TokenLessThanOrEqual    pos }
   '>'     { TokenGreaterThan        pos }
   '>='    { TokenGreaterThanOrEqual pos }
-
   '++'    { TokenAppend             pos }
 
   '\\'    { TokenLambda             pos }
@@ -47,13 +46,13 @@ Let         : let ident ':=' Expr in Let { Let $2 $4 $6 }
             | Expr                       { $1 }
 
 Expr        :: { Coma }
-Expr        : Expr '='  Call             { Equal $1 $3 }
-            | Expr '!=' Call             { NotEqual $1 $3 }
-            | Expr '<'  Call             { Less $1 $3 }
-            | Expr '<=' Call             { LessEqual $1 $3 }
-            | Expr '>'  Call             { Greater $1 $3 }
-            | Expr '>=' Call             { GreaterEqual $1 $3 }
-            | Expr '++' Call             { Append $1 $3 }
+Expr        : Expr '='  Call             { Operation $1 (show $2) $3 }
+            | Expr '!=' Call             { Operation $1 (show $2) $3 }
+            | Expr '<'  Call             { Operation $1 (show $2) $3 }
+            | Expr '<=' Call             { Operation $1 (show $2) $3 }
+            | Expr '>'  Call             { Operation $1 (show $2) $3 }
+            | Expr '>=' Call             { Operation $1 (show $2) $3 }
+            | Expr '++' Call             { Operation $1 (show $2) $3 }
             | Call                       { $1 }
 
 Call        :: { Coma }
@@ -79,10 +78,13 @@ parseError _ = error "Parse error"
 
 
 
--- ENV
+-- ALIASES
 
 
 type Env = HM.Map String Coma
+
+
+type Fn = Int -> Env -> Coma -> IO Coma
 
 
 
@@ -92,16 +94,11 @@ type Env = HM.Map String Coma
 data Coma
   = IntAtom Int
   | StrAtom String
+  | BoolAtom Bool
   | Ident String
   | List [Coma]
-  | Lambda Int Env (Int -> Env -> Coma -> IO Coma)
-  | Equal Coma Coma
-  | NotEqual Coma Coma
-  | Less Coma Coma
-  | LessEqual Coma Coma
-  | Greater Coma Coma
-  | GreaterEqual Coma Coma
-  | Append Coma Coma
+  | Lambda Int Env Fn
+  | Operation Coma String Coma
   | Call Coma Coma
   | Let String Coma Coma
   
@@ -125,16 +122,12 @@ instance Eq Coma where
 instance Show Coma where
   show (IntAtom i) = "#" ++ show i
   show (StrAtom s) = s
+  show (BoolAtom True) = "true"
+  show (BoolAtom False) = "false" 
   show (Ident idt) = "$" ++ idt
   show (List list) = "[ " ++ unwords (map show list) ++ " ]"
   show (Lambda i env _) = "<lambda/" ++ show i ++ "/" ++ show env ++ ">"
-  show (Equal e1 e2) = show e1 ++ " = " ++ show e2
-  show (NotEqual e1 e2) = show e1 ++ " != " ++ show e2
-  show (Less e1 e2) = show e1 ++ " < " ++ show e2
-  show (LessEqual e1 e2) = show e1 ++ " <= " ++ show e2
-  show (Greater e1 e2) = show e1 ++ " > " ++ show e2
-  show (GreaterEqual e1 e2) = show e1 ++ " >= " ++ show e2
-  show (Append e1 e2) = show e1 ++ " ++ " ++ show e2
+  show (Operation e1 tok e2) = show e1 ++ show tok ++ show e2
   show (Call e1 e2) = "(" ++ show e1 ++ " " ++ show e2 ++ ")"
   show (Let idt e1 e2) = "let " ++ idt ++ " := " ++ show e1 ++ " in " ++ show e2
 
@@ -156,6 +149,41 @@ execWithEnv env ident@(Ident name) =
 
 execWithEnv env (Lambda i lenv fn) = 
   return $ Lambda i (HM.union lenv env) fn
+
+execWithEnv env (Operation e1 " = " e2) = do
+  IntAtom i <- execWithEnv env e1
+  IntAtom j <- execWithEnv env e2
+  return $ BoolAtom (i == j)
+  
+execWithEnv env (Operation e1 " != " e2) = do
+  IntAtom i <- execWithEnv env e1
+  IntAtom j <- execWithEnv env e2
+  return $ BoolAtom (i /= j)
+
+execWithEnv env (Operation e1 " < " e2) = do
+  IntAtom i <- execWithEnv env e1
+  IntAtom j <- execWithEnv env e2
+  return $ BoolAtom (i < j)
+
+execWithEnv env (Operation e1 " <= " e2) = do
+  IntAtom i <- execWithEnv env e1
+  IntAtom j <- execWithEnv env e2
+  return $ BoolAtom (i <= j)
+
+execWithEnv env (Operation e1 " > " e2) = do
+  IntAtom i <- execWithEnv env e1
+  IntAtom j <- execWithEnv env e2
+  return $ BoolAtom (i > j)
+
+execWithEnv env (Operation e1 " >= " e2) = do
+  IntAtom i <- execWithEnv env e1
+  IntAtom j <- execWithEnv env e2
+  return $ BoolAtom (i >= j)
+
+execWithEnv env (Operation e1 " ++ " e2) = do
+  List i <- execWithEnv env e1
+  List j <- execWithEnv env e2
+  return $ List (i ++ j)
     
 execWithEnv env (Call e1 e2) = do
   Lambda i lenv fn <- execWithEnv env e1

@@ -22,10 +22,6 @@ tokens :-
   ">"               { \pos _ -> TokenGreaterThan        pos          }
   ">="              { \pos _ -> TokenGreaterThanOrEqual pos          }
   "++"              { \pos _ -> TokenAppend             pos          }
-  "+"               { \pos _ -> TokenAdd                pos          }
-  "-"               { \pos _ -> TokenSubtract           pos          }
-  "*"               { \pos _ -> TokenMultiply           pos          }
-  "/"               { \pos _ -> TokenDivide             pos          }
   "("               { \pos _ -> TokenLeftParen          pos          }
   ")"               { \pos _ -> TokenRightParen         pos          }
   "["               { \pos _ -> TokenLeftBrace          pos          }
@@ -38,20 +34,19 @@ tokens :-
   $digit+           { \pos s -> TokenInteger            pos (read s) } 
 
 { 
+-- TOKEN
+
+
 data Token
   = TokenArrow              AlexPosn
   | TokenLambda             AlexPosn
-  | TokenNotEqual           AlexPosn
   | TokenEqual              AlexPosn
+  | TokenNotEqual           AlexPosn
   | TokenLessThan           AlexPosn
   | TokenLessThanOrEqual    AlexPosn
   | TokenGreaterThan        AlexPosn
   | TokenGreaterThanOrEqual AlexPosn
   | TokenAppend             AlexPosn
-  | TokenAdd                AlexPosn
-  | TokenSubtract           AlexPosn
-  | TokenMultiply           AlexPosn
-  | TokenDivide             AlexPosn
   | TokenLeftParen          AlexPosn
   | TokenRightParen         AlexPosn
   | TokenLeftBrace          AlexPosn
@@ -62,9 +57,34 @@ data Token
   | TokenIdentifier         AlexPosn String
   | TokenString             AlexPosn String
   | TokenInteger            AlexPosn Int
-  deriving (Eq,Show) 
+  deriving Eq 
+
+
+
+-- SHOW TOKEN
+
+
+instance Show Token where
+  show (TokenEqual              _ ) = " = "
+  show (TokenNotEqual           _ ) = " != "
+  show (TokenLessThan           _ ) = " < "
+  show (TokenLessThanOrEqual    _ ) = " <= "
+  show (TokenGreaterThan        _ ) = " > "
+  show (TokenGreaterThanOrEqual _ ) = " >= "
+  show (TokenAppend             _ ) = " ++ "
+  show _                            = " <token> "
+
+
+
+-- LEX
+
 
 lex = alexScanTokens
+
+
+
+-- TOKEN POSITION
+
 
 tokenPosn :: Token -> String
 tokenPosn (TokenLambda             pos  ) = showPosn pos     
@@ -76,10 +96,6 @@ tokenPosn (TokenLessThanOrEqual    pos  ) = showPosn pos
 tokenPosn (TokenGreaterThan        pos  ) = showPosn pos     
 tokenPosn (TokenGreaterThanOrEqual pos  ) = showPosn pos     
 tokenPosn (TokenAppend             pos  ) = showPosn pos     
-tokenPosn (TokenAdd                pos  ) = showPosn pos     
-tokenPosn (TokenSubtract           pos  ) = showPosn pos     
-tokenPosn (TokenMultiply           pos  ) = showPosn pos     
-tokenPosn (TokenDivide             pos  ) = showPosn pos     
 tokenPosn (TokenLeftParen          pos  ) = showPosn pos     
 tokenPosn (TokenRightParen         pos  ) = showPosn pos     
 tokenPosn (TokenLeftBrace          pos  ) = showPosn pos
@@ -90,6 +106,7 @@ tokenPosn (TokenIn                 pos  ) = showPosn pos
 tokenPosn (TokenIdentifier         pos _) = showPosn pos
 tokenPosn (TokenString             pos _) = showPosn pos
 tokenPosn (TokenInteger            pos _) = showPosn pos
+
 
 showPosn :: AlexPosn -> String
 showPosn (AlexPn _ x y) = "line " ++ show x ++ ", column " ++ show y

@@ -1,10 +1,9 @@
 module Core 
   ( Core.read
   , join
-  , doubleJoin
+  , double
   , get
   , select
-  , pairUp
   , value
   , firstOr
   , merge
@@ -27,10 +26,21 @@ invalidInput fn expr = error $ "Invalid input to '" ++ fn ++ "': " ++ show expr
 
 
 
+-- DOUBLE
+-- Now that all Core functions are curried, use double to uncurry them back.
+
+
+double :: Ast.Fn -> Ast.Coma -> Ast.Coma -> IO Ast.Coma
+double fn xs ys = do
+  Ast.Lambda i lenv fn <- fn 0 HM.empty xs
+  fn i lenv ys
+
+
+
 -- READ
 
 
-read :: Int -> Ast.Env -> Ast.Coma -> IO Ast.Coma
+read :: Ast.Fn
 read _ _ (Ast.StrAtom filename) = 
   readFile filename >>= (return . convert . Csv.parse)
   where 
@@ -45,7 +55,7 @@ read _ _ err = invalidInput "read" err
 -- output list is X * Y where X and Y are respective length of the input tables.
 
 
-join :: Int -> Ast.Env -> Ast.Coma -> IO Ast.Coma
+join :: Ast.Fn
 
 join 0 env list@(Ast.List ys) 
   = return 
@@ -61,30 +71,20 @@ join 1 env list@(Ast.List ys) =
 join _ _ err = invalidInput "join" err
     
 
-doubleJoin :: Ast.Coma -> Ast.Coma -> IO Ast.Coma
-doubleJoin xs ys = do
-  Ast.Lambda i lenv fn <- join 0 HM.empty xs
-  fn i lenv ys
-
-
-
--- PAIR UP
--- Combine 2 CSV tables by creating a list of Csv.Row pairs. Unlike join, this
--- function does not operate as a forEach loop, but rather follows the behaviour
--- of the Prelude.zip function.
-
-
-pairUp :: Csv.Table -> Csv.Table -> Csv.Table
-pairUp a b = map (uncurry (++)) $ Prelude.zip a b
-
-
 
 -- GET
 -- Create a Csv.Row with just the elements under selected indices.
 
 
-get :: [Int] -> Csv.Row -> Csv.Row
-get indices row = map (row !!) indices
+--  :: [Int] -> Csv.Row -> Csv.Row
+get :: Ast.Fn
+
+get 0 env ids@(Ast.List _) = return $ Ast.Lambda 1 (HM.insert "ids" ids env) get
+
+get 1 env (Ast.List row) =
+  let Just (Ast.List ids) = HM.lookup "ids" env in
+  return $ Ast.List (map aux ids)
+  where aux (Ast.IntAtom i) = row !! i
 
 
 
@@ -92,8 +92,17 @@ get indices row = map (row !!) indices
 -- Create a Csv.Table with just the columns under selected indices.
 
 
-select :: [Int] -> Csv.Table -> Csv.Table
-select indices = map (get indices)
+--     :: [Int] -> Csv.Table -> Csv.Table
+select :: Ast.Fn
+
+select 0 env ids@(Ast.List _) 
+  = return 
+  $ Ast.Lambda 1 (HM.insert "ids" ids env) select
+
+select 1 env table@(Ast.List rows) =
+  let Just ids@(Ast.List _) = HM.lookup "ids" env in do
+  list <- mapM (double get ids) rows
+  return $ Ast.List list 
 
 
 
