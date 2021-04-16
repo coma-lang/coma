@@ -5,17 +5,17 @@ let P := read "P.csv" in
 let Q := read "Q.csv" in
 
 
-let filtered := given (row -> get [0] row = get [4] row) (join P Q) in
+let filtered := given (\row -> get [0] row = get [4] row) (join P Q) in
 
 
 -- forEachRow : Row -> Maybe Row
 let forEachRow := 
   -- row : p1 p2 p3 p4  q1 q2 q3 q4
   -- ids : 0  1  2  3   4  5  6  7
-  (row ->
+  \row ->
     let ps := get [1 2 3] row in
     let qs := get [5 6 7] row in
-    get [0] row ++ merge ps qs)
+    get [0] row ++ merge ps qs
 in
 
 
