@@ -30,13 +30,13 @@ invalidInput fn expr = error $ "Invalid input to '" ++ fn ++ "': " ++ show expr
 -- READ
 
 
-read :: Ast.Env -> Ast.Coma -> IO Ast.Coma
-read _ (Ast.StrAtom filename) = 
+read :: Int -> Ast.Env -> Ast.Coma -> IO Ast.Coma
+read _ _ (Ast.StrAtom filename) = 
   readFile filename >>= (return . convert . Csv.parse)
   where 
     convert = Ast.List . map convertRow
     convertRow = Ast.List . map Ast.StrAtom
-read _ err = invalidInput "read" err
+read _ _ err = invalidInput "read" err
 
 
 
@@ -45,21 +45,26 @@ read _ err = invalidInput "read" err
 -- output list is X * Y where X and Y are respective length of the input tables.
 
 
-join :: Ast.Env -> Ast.Coma -> IO Ast.Coma
-join env list@(Ast.List ys) =
-  case xs' of
-    Nothing -> return $ Ast.Lambda (HM.insert "xs" list env) join
-    Just (Ast.List xs) -> return
-      $ Ast.List 
-      $ map (Ast.List . uncurry (++)) 
-      $ [(x,y) | (Ast.List x) <- xs, (Ast.List y) <- ys]
-  where xs' = HM.lookup "xs" env
+join :: Int -> Ast.Env -> Ast.Coma -> IO Ast.Coma
+
+join 0 env list@(Ast.List ys) 
+  = return 
+  $ Ast.Lambda 1 (HM.insert "xs" list env) join
+
+join 1 env list@(Ast.List ys) =
+  let Just (Ast.List xs) = HM.lookup "xs" env in
+  return
+    $ Ast.List 
+    $ map (Ast.List . uncurry (++)) 
+    $ [(x,y) | (Ast.List x) <- xs, (Ast.List y) <- ys]
+
+join _ _ err = invalidInput "join" err
     
 
 doubleJoin :: Ast.Coma -> Ast.Coma -> IO Ast.Coma
 doubleJoin xs ys = do
-  Ast.Lambda lenv fn <- join HM.empty xs
-  fn lenv ys
+  Ast.Lambda i lenv fn <- join 0 HM.empty xs
+  fn i lenv ys
 
 
 
