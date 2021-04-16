@@ -75,7 +75,7 @@ Literal     : integer                    { IntAtom $1 }
             | ident                      { Ident $1 }
             | '(' Expr ')'               { $2 }
             | '[' List ']'               { List $2 }
-            | '\\' ident '->' Literal    { Lambda HM.empty (lambda $2 $4) }
+            | '\\' ident '->' Literal    { Lambda 0 HM.empty (lambda $2 $4) }
 
 List        :: { [Coma] }
 List        : {- empty -}                { [] }
@@ -103,7 +103,7 @@ data Coma
   | StrAtom String
   | Ident String
   | List [Coma]
-  | Lambda Env (Env -> Coma -> IO Coma)
+  | Lambda Int Env (Int -> Env -> Coma -> IO Coma)
   | Equal Coma Coma
   | NotEqual Coma Coma
   | Less Coma Coma
@@ -136,11 +136,11 @@ instance Eq Coma where
 
 
 instance Show Coma where
-  show (IntAtom i) = show i
+  show (IntAtom i) = "#" ++ show i
   show (StrAtom s) = s
-  show (Ident idt) = idt
+  show (Ident idt) = "$" ++ idt
   show (List list) = "[ " ++ unwords (map show list) ++ " ]"
-  show (Lambda _ _) = "<lambda>"
+  show (Lambda i _ _) = "<lambda/" ++ show i ++ ">"
   show (Equal e1 e2) = show e1 ++ " = " ++ show e2
   show (NotEqual e1 e2) = show e1 ++ " != " ++ show e2
   show (Less e1 e2) = show e1 ++ " < " ++ show e2
@@ -162,8 +162,9 @@ instance Show Coma where
 
 execWithEnv :: Env -> Coma -> IO Coma
 
-execWithEnv env int@(IntAtom _) = return int
-execWithEnv env str@(StrAtom _) = return str
+execWithEnv _ int@(IntAtom _) = return int
+execWithEnv _ str@(StrAtom _) = return str
+execWithEnv _ lst@(List    _) = return lst
 
 execWithEnv env ident@(Ident name) = 
   case HM.lookup name env of
@@ -171,9 +172,9 @@ execWithEnv env ident@(Ident name) =
     Nothing   -> error $ "Unknown identifier: '" ++ name ++ "'"
     
 execWithEnv env (Call e1 e2) = do
-  Lambda lenv fn <- execWithEnv env e1
+  Lambda i lenv fn <- execWithEnv env e1
   arg <- execWithEnv env e2
-  fn lenv arg
+  fn i (HM.union env lenv) arg
 
 execWithEnv env (Let ident expr inexpr) = do
   evaluated <- execWithEnv env expr
@@ -186,6 +187,6 @@ execWithEnv _ code = return code
 -- LAMBDA
 
 
-lambda :: String -> Ast.Coma -> Ast.Env -> Ast.Coma -> IO Ast.Coma
-lambda param expr env arg = execWithEnv (HM.insert param arg env) expr
+lambda :: String -> Ast.Coma -> Int -> Ast.Env -> Ast.Coma -> IO Ast.Coma
+lambda param expr _ env arg = execWithEnv (HM.insert param arg env) expr
 }
