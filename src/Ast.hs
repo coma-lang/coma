@@ -837,7 +837,7 @@ instance Show Coma where
   show (StrAtom s) = s
   show (Ident idt) = "$" ++ idt
   show (List list) = "[ " ++ unwords (map show list) ++ " ]"
-  show (Lambda i _ _) = "<lambda/" ++ show i ++ ">"
+  show (Lambda i env _) = "<lambda/" ++ show i ++ "/" ++ show env ++ ">"
   show (Equal e1 e2) = show e1 ++ " = " ++ show e2
   show (NotEqual e1 e2) = show e1 ++ " != " ++ show e2
   show (Less e1 e2) = show e1 ++ " < " ++ show e2
@@ -867,6 +867,9 @@ execWithEnv env ident@(Ident name) =
   case HM.lookup name env of
     Just coma -> return coma
     Nothing   -> error $ "Unknown identifier: '" ++ name ++ "'"
+
+execWithEnv env (Lambda i lenv fn) = 
+  return $ Lambda i (HM.union lenv env) fn
     
 execWithEnv env (Call e1 e2) = do
   Lambda i lenv fn <- execWithEnv env e1
