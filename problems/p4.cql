@@ -1,5 +1,5 @@
 -- PROBLEM 4
 
 
-let A := read "A.csv" in
-given (\row -> not (empty (value 1 row))) A
+let A := read "test/data/p4-2-A.csv" in
+given (\row -> value 1 row != "") A

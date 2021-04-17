@@ -46,4 +46,7 @@ env = HM.fromList
   , ("join",   Ast.Lambda 0 HM.empty Core.join)
   , ("get",    Ast.Lambda 0 HM.empty Core.get)
   , ("select", Ast.Lambda 0 HM.empty Core.select)
+  , ("value",  Ast.Lambda 0 HM.empty Core.value)
+  , ("merge",  Ast.Lambda 0 HM.empty Core.merge)
+  , ("given",  Ast.Lambda 0 HM.empty Core.given)
   ]

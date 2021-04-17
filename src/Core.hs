@@ -8,7 +8,6 @@ module Core
   , firstOr
   , merge
   , given
-  , empty
   ) where
 
 import Data.Maybe
@@ -99,7 +98,7 @@ select 0 env ids@(Ast.List _)
   = return 
   $ Ast.Lambda 1 (HM.insert "ids" ids env) select
 
-select 1 env table@(Ast.List rows) =
+select 1 env (Ast.List rows) =
   let Just ids@(Ast.List _) = HM.lookup "ids" env in do
   list <- mapM (double get ids) rows
   return $ Ast.List list 
@@ -110,16 +109,24 @@ select 1 env table@(Ast.List rows) =
 -- Look at the value at given index in row.
 
 
-value :: Int -> Csv.Row -> String
-value index row = row !! index
+--    :: Int -> Csv.Row -> String
+value :: Ast.Fn
+
+value 0 env index@(Ast.IntAtom _)
+  = return
+  $ Ast.Lambda 1 (HM.insert "index" index env) value
+
+value 1 env (Ast.List row) =
+  let Just (Ast.IntAtom index) = HM.lookup "index" env in do
+  return $ row !! index 
 
 
 
 -- FIRST OR
 
 
-firstOr :: String -> String -> String
-firstOr x y = if empty x then y else x
+firstOr :: Ast.Coma -> Ast.Coma -> Ast.Coma
+firstOr (Ast.StrAtom x) (Ast.StrAtom y) = Ast.StrAtom $ if null x then y else x
 
 
 
@@ -128,8 +135,16 @@ firstOr x y = if empty x then y else x
 -- row if the value in the first row is an empty string.
 
 
-merge :: Csv.Row -> Csv.Row -> Csv.Row
-merge p q = map (uncurry firstOr) $ Prelude.zip p q
+-- :: Csv.Row -> Csv.Row -> Csv.Row
+merge :: Ast.Fn
+
+merge 0 env p@(Ast.List _)
+  = return
+  $ Ast.Lambda 1 (HM.insert "p" p env) merge
+
+merge 1 env (Ast.List q) =
+  let Just (Ast.List p) = HM.lookup "p" env in do
+  return $ Ast.List $ map (uncurry firstOr) $ Prelude.zip p q
 
 
 
@@ -137,15 +152,22 @@ merge p q = map (uncurry firstOr) $ Prelude.zip p q
 -- Filter out table rows that don't fit the predicate.
 
 
-given :: (Csv.Row -> Bool) -> Csv.Table -> Csv.Table
-given predicate table = mapMaybe selector table
-  where selector row = if predicate row then Just row else Nothing
+--    :: (Csv.Row -> Bool) -> Csv.Table -> Csv.Table
+given :: Ast.Fn
+
+given 0 env predicate@(Ast.Lambda _ _ _)
+  = return
+  $ Ast.Lambda 1 (HM.insert "predicate" predicate env) given
+
+given 1 env (Ast.List rows) =
+  let 
+    Just predicate@(Ast.Lambda _ _ _) = HM.lookup "predicate" env 
+  in do
+  maybes <- mapM (selector env predicate) rows
+  return $ Ast.List $ catMaybes maybes
 
 
-
--- EMPTY
--- Checks if CSV value is an empty string.
-
-
-empty :: String -> Bool
-empty = null
+selector :: Ast.Env -> Ast.Coma -> Ast.Coma -> IO (Maybe Ast.Coma)
+selector env fn@(Ast.Lambda _ _ _) row = do
+  Ast.BoolAtom ok <- Ast.execWithEnv env (Ast.Call fn row)
+  return $ if ok then Just row else Nothing

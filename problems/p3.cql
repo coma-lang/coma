@@ -1,11 +1,11 @@
 -- PROBLEM 3
 
 
-let P := read "P.csv" in
-let Q := read "Q.csv" in
+let P := read "test/data/p3-1-P.csv" in
+let Q := read "test/data/p3-1-Q.csv" in
 
 
-let filtered := given (\row -> get [0] row = get [4] row) (join P Q) in
+let filtered := given (\row -> value 0 row = value 4 row) (join P Q) in
 
 
 -- forEachRow : Row -> Maybe Row
