@@ -65,7 +65,7 @@ Literal     : integer                    { IntAtom $1 }
             | ident                      { Ident $1 }
             | '(' Expr ')'               { $2 }
             | '[' List ']'               { List $2 }
-            | '\\' ident '->' Literal    { Lambda 0 HM.empty (lambda $2 $4) }
+            | '\\' ident '->' Let        { Lambda 0 HM.empty (lambda $2 $4) }
 
 List        :: { [Coma] }
 List        : {- empty -}                { [] }
@@ -111,7 +111,7 @@ instance Eq Coma where
   IntAtom i == IntAtom j = i == j
   StrAtom i == StrAtom j = i == j
   Ident   i == Ident   j = i == j
-  List    i == List    j = j == j
+  List    i == List    j = i == j
   _         == _         = False
 
 
@@ -147,17 +147,17 @@ execWithEnv env ident@(Ident name) =
     Just coma -> return coma
     Nothing   -> error $ "Unknown identifier: '" ++ name ++ "'"
 
-execWithEnv env (Lambda i lenv fn) = 
+execWithEnv env lambda@(Lambda i lenv fn) = 
   return $ Lambda i (HM.union lenv env) fn
 
 execWithEnv env (Operation e1 " = " e2) = do
-  IntAtom i <- execWithEnv env e1
-  IntAtom j <- execWithEnv env e2
+  i <- execWithEnv env e1
+  j <- execWithEnv env e2
   return $ BoolAtom (i == j)
   
 execWithEnv env (Operation e1 " != " e2) = do
-  IntAtom i <- execWithEnv env e1
-  IntAtom j <- execWithEnv env e2
+  i <- execWithEnv env e1
+  j <- execWithEnv env e2
   return $ BoolAtom (i /= j)
 
 execWithEnv env (Operation e1 " < " e2) = do
@@ -201,6 +201,6 @@ execWithEnv _ code = return code
 -- LAMBDA
 
 
-lambda :: String -> Ast.Coma -> Int -> Ast.Env -> Ast.Coma -> IO Ast.Coma
+lambda :: String -> Coma -> Int -> Env -> Coma -> IO Coma
 lambda param expr _ env arg = execWithEnv (HM.insert param arg env) expr
 }

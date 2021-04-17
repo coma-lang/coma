@@ -2,4 +2,5 @@
 -- currently working.
 
 
-select [0 2] (read "test/data/numbers.csv")
+let g := given (\r -> value 0 r != "") in 
+g [ ["" ""] ["a" "a"] ["b" "b"] ]
