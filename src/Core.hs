@@ -8,6 +8,7 @@ module Core
   , firstOr
   , merge
   , given
+  , forEach
   ) where
 
 import Data.Maybe
@@ -171,3 +172,23 @@ selector :: Ast.Env -> Ast.Coma -> Ast.Coma -> IO (Maybe Ast.Coma)
 selector env fn@(Ast.Lambda _ _ _) row = do
   Ast.BoolAtom ok <- Ast.execWithEnv env (Ast.Call fn row)
   return $ if ok then Just row else Nothing
+
+
+
+-- FOR EACH
+-- Higher-order function that applies lambda to every element of a list.
+
+
+--    :: (Csv.Row -> Bool) -> Csv.Table -> Csv.Table
+forEach :: Ast.Fn
+
+forEach 0 env fn@(Ast.Lambda _ _ _)
+  = return
+  $ Ast.Lambda 1 (HM.insert "fn" fn env) forEach
+
+forEach 1 env (Ast.List items) =
+  let 
+    Just fn@(Ast.Lambda _ _ _) = HM.lookup "fn" env 
+    mapper env fn@(Ast.Lambda _ _ _) row =
+      Ast.execWithEnv env (Ast.Call fn row)
+  in mapM (mapper env fn) items >>= (return . Ast.List)
