@@ -1,7 +1,7 @@
 -- PROBLEM 5
 
 
-let A := read "A.csv" in
+let A := read "test/data/p5-1-A.csv" in
 
 
 let forEachRow := 
