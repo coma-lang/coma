@@ -23,15 +23,3 @@ csvParse = do
   it "CSV with whitespace" $
     Csv.parse ",  ,\n3,4,5"
       `shouldBe` [["","",""],["3","4","5"]]
-
-
-
--- SERIALIZE
-
-
-csvSerialize :: Spec
-csvSerialize = do
-
-  it "Serialize CSV" $
-    Csv.serialize [["","",""],["3","4","5"]]
-      `shouldBe` ",,\n3,4,5\n"

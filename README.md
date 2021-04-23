@@ -77,29 +77,24 @@ stack exec csvql repl
 Exit the REPL session with either `CTRL+C` or `CTRL+D` (although the second
 might not work on Windows).
 
-### Build
+### Install
 
 #### Windows
 
 ```bash
-alex syntax/Lexer.x -o src/Lexer.hs
-stack build
+alex  syntax/Lexer.x  -o src/Lexer.hs
+happy syntax/Parser.y -o src/Ast.hs
+stack install
 ```
 
 #### Linux
 
 ```bash
-bash setup.sh
+bash install.sh
 ```
 
 #### MacOS
 
 ```bash
-zsh setup.sh
-```
-
-### Install
-
-```bash
-stack install
+zsh install.sh
 ```

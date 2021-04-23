@@ -2,10 +2,9 @@ module Csv
   ( Row
   , Table
   , parse
-  , serialize
+  , coma
   ) where
 
-import Data.List (intercalate)
 import Data.List.Split (splitOn)
 import Data.List.Extra (trim)
 
@@ -32,15 +31,3 @@ coma = ","
 
 parse :: String -> Table
 parse = map (map trim . splitOn coma) . lines
-
-
-
--- SERIALIZE
-
-
-showRow :: Csv.Row -> String
-showRow = intercalate coma
-
-
-serialize :: Csv.Table -> String
-serialize = unlines . map showRow

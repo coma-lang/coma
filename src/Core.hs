@@ -221,6 +221,6 @@ csv 0 env table@(Ast.List rows)
   $ intercalate "\n"
   $ sort
   $ map createRow rows
-  where createRow (Ast.List cells) = intercalate "," $ map show cells
+  where createRow (Ast.List cells) = intercalate Csv.coma $ map show cells
 
 csv _ _ err = invalidInput "csv" err

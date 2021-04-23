@@ -26,7 +26,7 @@ read = aux "" 0
 
 print :: String -> IO ()
 print output = do
-  mapM_ (\line -> putStrLn $ "❯❯❯ " ++ line) (lines output)
+  mapM_ (putStrLn . ("❯❯❯ " ++)) (lines output)
   putStr "\n"
 
 
