@@ -214,6 +214,7 @@ forEach _ _ err = invalidInput "forEach" err
 
 
 csv :: Ast.Fn
+
 csv 0 env table@(Ast.List rows)
   = return
   $ Ast.StrAtom
@@ -221,3 +222,5 @@ csv 0 env table@(Ast.List rows)
   $ sort
   $ map createRow rows
   where createRow (Ast.List cells) = intercalate "," $ map show cells
+
+csv _ _ err = invalidInput "csv" err
