@@ -2,4 +2,4 @@
 
 
 let A := read "test/data/p4-2-A.csv" in
-given (\row -> value 1 row != "") A
+csv ( given (\row -> value 1 row != "") A )

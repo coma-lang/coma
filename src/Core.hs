@@ -9,9 +9,11 @@ module Core
   , merge
   , given
   , forEach
+  , csv
   ) where
 
 import Data.Maybe
+import Data.List (sort, intercalate)
 import qualified Data.HashMap as HM
 
 import qualified Csv
@@ -86,6 +88,8 @@ get 1 env (Ast.List row) =
   return $ Ast.List (map aux ids)
   where aux (Ast.IntAtom i) = row !! i
 
+get _ _ err = invalidInput "get" err
+
 
 
 -- SELECT
@@ -104,6 +108,8 @@ select 1 env (Ast.List rows) =
   list <- mapM (double get ids) rows
   return $ Ast.List list 
 
+select _ _ err = invalidInput "select" err
+
 
 
 -- VALUE
@@ -120,6 +126,8 @@ value 0 env index@(Ast.IntAtom _)
 value 1 env (Ast.List row) =
   let Just (Ast.IntAtom index) = HM.lookup "index" env in do
   return $ row !! index 
+
+value _ _ err = invalidInput "value" err
 
 
 
@@ -147,6 +155,8 @@ merge 1 env (Ast.List q) =
   let Just (Ast.List p) = HM.lookup "p" env in do
   return $ Ast.List $ map (uncurry firstOr) $ Prelude.zip p q
 
+merge _ _ err = invalidInput "merge" err
+
 
 
 -- GIVEN
@@ -166,6 +176,8 @@ given 1 env (Ast.List rows) =
   in do
   maybes <- mapM (selector env predicate) rows
   return $ Ast.List $ catMaybes maybes
+
+given _ _ err = invalidInput "given" err
 
 
 selector :: Ast.Env -> Ast.Coma -> Ast.Coma -> IO (Maybe Ast.Coma)
@@ -192,3 +204,20 @@ forEach 1 env (Ast.List items) =
     mapper env fn@(Ast.Lambda _ _ _) row =
       Ast.execWithEnv env (Ast.Call fn row)
   in mapM (mapper env fn) items >>= (return . Ast.List)
+
+forEach _ _ err = invalidInput "forEach" err
+
+
+
+-- CSV
+-- Convert list of lists into a sorted CSV.
+
+
+csv :: Ast.Fn
+csv 0 env table@(Ast.List rows)
+  = return
+  $ Ast.StrAtom
+  $ intercalate "\n"
+  $ sort
+  $ map createRow rows
+  where createRow (Ast.List cells) = intercalate "," $ map show cells
