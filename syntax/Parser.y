@@ -101,6 +101,23 @@ data Coma
   | Operation Coma String Coma
   | Call Coma Coma
   | Let String Coma Coma
+
+
+
+-- ORD
+
+
+uncomparable :: (Show a, Show b) => a -> b -> Bool
+uncomparable i j 
+  = error $ "Cannot compare: " ++ show i ++ " " ++ show j
+
+
+instance Ord Coma where
+  IntAtom i <= IntAtom j = i <= j
+  StrAtom i <= StrAtom j = i <= j
+  Ident   i <= Ident   j = i <= j
+  List    i <= List    j = i <= j
+  i         <= j         = uncomparable i j
   
 
 
@@ -161,23 +178,23 @@ execWithEnv env (Operation e1 " != " e2) = do
   return $ BoolAtom (i /= j)
 
 execWithEnv env (Operation e1 " < " e2) = do
-  IntAtom i <- execWithEnv env e1
-  IntAtom j <- execWithEnv env e2
+  i <- execWithEnv env e1
+  j <- execWithEnv env e2
   return $ BoolAtom (i < j)
 
 execWithEnv env (Operation e1 " <= " e2) = do
-  IntAtom i <- execWithEnv env e1
-  IntAtom j <- execWithEnv env e2
+  i <- execWithEnv env e1
+  j <- execWithEnv env e2
   return $ BoolAtom (i <= j)
 
 execWithEnv env (Operation e1 " > " e2) = do
-  IntAtom i <- execWithEnv env e1
-  IntAtom j <- execWithEnv env e2
+  i <- execWithEnv env e1
+  j <- execWithEnv env e2
   return $ BoolAtom (i > j)
 
 execWithEnv env (Operation e1 " >= " e2) = do
-  IntAtom i <- execWithEnv env e1
-  IntAtom j <- execWithEnv env e2
+  i <- execWithEnv env e1
+  j <- execWithEnv env e2
   return $ BoolAtom (i >= j)
 
 execWithEnv env (Operation e1 " ++ " e2) = do
