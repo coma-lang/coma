@@ -10,6 +10,7 @@ module Core
   , given
   , forEach
   , csv
+  , ifElse
   ) where
 
 import Data.Maybe
@@ -224,3 +225,26 @@ csv 0 env table@(Ast.List rows)
   where createRow (Ast.List cells) = intercalate Csv.coma $ map show cells
 
 csv _ _ err = invalidInput "csv" err
+
+
+
+-- IF
+
+
+ifElse :: Ast.Fn
+
+ifElse 0 env condition@(Ast.BoolAtom _)
+  = return
+  $ Ast.Lambda 1 (HM.insert "condition" condition env) ifElse
+
+ifElse 1 env left
+  = return
+  $ Ast.Lambda 2 (HM.insert "left" left env) ifElse
+
+ifElse 2 env right =
+  let
+    Just (Ast.BoolAtom condition) = HM.lookup "condition" env
+    Just left = HM.lookup "left" env
+  in return $ if condition then left else right
+
+ifElse _ _ err = invalidInput "if" err
