@@ -15,6 +15,8 @@ tokens :-
   "--".*            ; 
   "\"               { \pos _ -> TokenLambda             pos          }
   "->"              { \pos _ -> TokenArrow              pos          }
+  "&"               { \pos _ -> TokenAnd                pos          }
+  "|"               { \pos _ -> TokenOr                 pos          }
   "!="              { \pos _ -> TokenNotEqual           pos          }
   "="               { \pos _ -> TokenEqual              pos          }
   "<"               { \pos _ -> TokenLessThan           pos          }
@@ -40,6 +42,8 @@ tokens :-
 data Token
   = TokenArrow              AlexPosn
   | TokenLambda             AlexPosn
+  | TokenAnd                AlexPosn
+  | TokenOr                 AlexPosn
   | TokenEqual              AlexPosn
   | TokenNotEqual           AlexPosn
   | TokenLessThan           AlexPosn
@@ -65,6 +69,8 @@ data Token
 
 
 instance Show Token where
+  show (TokenAnd                _ ) = " & "
+  show (TokenOr                 _ ) = " | "
   show (TokenEqual              _ ) = " = "
   show (TokenNotEqual           _ ) = " != "
   show (TokenLessThan           _ ) = " < "
@@ -89,6 +95,8 @@ lex = alexScanTokens
 tokenPosn :: Token -> String
 tokenPosn (TokenLambda             pos  ) = showPosn pos     
 tokenPosn (TokenArrow              pos  ) = showPosn pos     
+tokenPosn (TokenAnd                pos  ) = showPosn pos     
+tokenPosn (TokenOr                 pos  ) = showPosn pos     
 tokenPosn (TokenNotEqual           pos  ) = showPosn pos     
 tokenPosn (TokenEqual              pos  ) = showPosn pos     
 tokenPosn (TokenLessThan           pos  ) = showPosn pos     

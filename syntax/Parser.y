@@ -14,6 +14,8 @@ import Lexer
   '['     { TokenLeftBrace          pos }
   ']'     { TokenRightBrace         pos }
 
+  '&'     { TokenAnd                pos }
+  '|'     { TokenOr                 pos }
   '='     { TokenEqual              pos }
   '!='    { TokenNotEqual           pos }
   '<'     { TokenLessThan           pos }
@@ -46,13 +48,18 @@ Let         : let ident ':=' Expr in Let { Let $2 $4 $6 }
             | Expr                       { $1 }
 
 Expr        :: { Coma }
-Expr        : Expr '='  Call             { Operation $1 (show $2) $3 }
-            | Expr '!=' Call             { Operation $1 (show $2) $3 }
-            | Expr '<'  Call             { Operation $1 (show $2) $3 }
-            | Expr '<=' Call             { Operation $1 (show $2) $3 }
-            | Expr '>'  Call             { Operation $1 (show $2) $3 }
-            | Expr '>=' Call             { Operation $1 (show $2) $3 }
-            | Expr '++' Call             { Operation $1 (show $2) $3 }
+Expr        : Expr '&' Bool              { Operation $1 (show $2) $3 }
+            | Expr '|' Bool              { Operation $1 (show $2) $3 }
+            | Bool                       { $1 }
+
+Bool        :: { Coma }
+Bool        : Bool '='  Call             { Operation $1 (show $2) $3 }
+            | Bool '!=' Call             { Operation $1 (show $2) $3 }
+            | Bool '<'  Call             { Operation $1 (show $2) $3 }
+            | Bool '<=' Call             { Operation $1 (show $2) $3 }
+            | Bool '>'  Call             { Operation $1 (show $2) $3 }
+            | Bool '>=' Call             { Operation $1 (show $2) $3 }
+            | Bool '++' Call             { Operation $1 (show $2) $3 }
             | Call                       { $1 }
 
 Call        :: { Coma }
@@ -166,6 +173,16 @@ execWithEnv env ident@(Ident name) =
 
 execWithEnv env lambda@(Lambda i lenv fn) = 
   return $ Lambda i (HM.union lenv env) fn
+
+execWithEnv env (Operation e1 " & " e2) = do
+  BoolAtom i <- execWithEnv env e1
+  BoolAtom j <- execWithEnv env e2
+  return $ BoolAtom (i && j)
+
+execWithEnv env (Operation e1 " | " e2) = do
+  BoolAtom i <- execWithEnv env e1
+  BoolAtom j <- execWithEnv env e2
+  return $ BoolAtom (i || j)
 
 execWithEnv env (Operation e1 " = " e2) = do
   i <- execWithEnv env e1
