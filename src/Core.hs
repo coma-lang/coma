@@ -11,6 +11,7 @@ module Core
   , forEach
   , csv
   , ifElse
+  , boolNot
   ) where
 
 import Data.Maybe
@@ -248,3 +249,15 @@ ifElse 2 env right =
   in return $ if condition then left else right
 
 ifElse _ _ err = invalidInput "if" err
+
+
+
+-- NOT
+
+
+boolNot :: Ast.Fn
+
+
+boolNot 0 env (Ast.BoolAtom b) = return $ Ast.BoolAtom $ not b
+
+boolNot _ _ err = invalidInput "not" err

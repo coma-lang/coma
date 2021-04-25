@@ -52,4 +52,5 @@ env = HM.fromList
   , ("forEach", Ast.Lambda 0 HM.empty Core.forEach)
   , ("csv",     Ast.Lambda 0 HM.empty Core.csv)
   , ("if",      Ast.Lambda 0 HM.empty Core.ifElse)
+  , ("not",     Ast.Lambda 0 HM.empty Core.boolNot)
   ]
