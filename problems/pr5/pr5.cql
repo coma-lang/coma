@@ -2,4 +2,4 @@
 
 
 let A := read "A.csv" in
-csv ( forEach (\row -> row ++ ["0"] ++ row) A )
+csv ( each (\row -> row ++ ["0"] ++ row) A )

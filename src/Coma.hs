@@ -42,15 +42,15 @@ exec = Ast.execWithEnv env
 
 env :: HM.Map String Ast.Coma
 env = HM.fromList
-  [ ("read",    Ast.Lambda 0 HM.empty Core.read)
-  , ("join",    Ast.Lambda 0 HM.empty Core.join)
-  , ("get",     Ast.Lambda 0 HM.empty Core.get)
-  , ("select",  Ast.Lambda 0 HM.empty Core.select)
-  , ("value",   Ast.Lambda 0 HM.empty Core.value)
-  , ("merge",   Ast.Lambda 0 HM.empty Core.merge)
-  , ("given",   Ast.Lambda 0 HM.empty Core.given)
-  , ("forEach", Ast.Lambda 0 HM.empty Core.forEach)
-  , ("csv",     Ast.Lambda 0 HM.empty Core.csv)
-  , ("if",      Ast.Lambda 0 HM.empty Core.ifElse)
-  , ("not",     Ast.Lambda 0 HM.empty Core.boolNot)
+  [ ("read",   Ast.Lambda 0 HM.empty Core.read)
+  , ("join",   Ast.Lambda 0 HM.empty Core.join)
+  , ("get",    Ast.Lambda 0 HM.empty Core.get)
+  , ("select", Ast.Lambda 0 HM.empty Core.select)
+  , ("value",  Ast.Lambda 0 HM.empty Core.value)
+  , ("merge",  Ast.Lambda 0 HM.empty Core.merge)
+  , ("given",  Ast.Lambda 0 HM.empty Core.given)
+  , ("each",   Ast.Lambda 0 HM.empty Core.forEach)
+  , ("csv",    Ast.Lambda 0 HM.empty Core.csv)
+  , ("if",     Ast.Lambda 0 HM.empty Core.ifElse)
+  , ("not",    Ast.Lambda 0 HM.empty Core.boolNot)
   ]
