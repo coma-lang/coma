@@ -1,6 +1,3 @@
--- PROBLEM 3
-
-
 let P := read "P.csv" in
 let Q := read "Q.csv" in
 
