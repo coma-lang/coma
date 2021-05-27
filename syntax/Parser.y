@@ -164,7 +164,7 @@ execWithEnv :: Env -> Coma -> IO Coma
 
 execWithEnv _ int@(IntAtom _) = return int
 execWithEnv _ str@(StrAtom _) = return str
-execWithEnv _ lst@(List    _) = return lst
+execWithEnv env (List lst) = mapM (execWithEnv env) lst >>= (return . List)
 
 execWithEnv env ident@(Ident name) = 
   case HM.lookup name env of
